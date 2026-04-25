@@ -1785,12 +1785,12 @@ body.tiktok-mode .review-card{
 
       <div class="field" style="margin-top:10px;">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);">
-          <input type="checkbox" id="tiktokMode" onchange="toggleTikTokMode()" style="width:auto;cursor:pointer;">
-          <span>📱 TikTok Mode (9:16 Ratio)</span>
+          <input type="checkbox" id="tiktokMode" onchange="toggleTikTokMode()" checked style="width:auto;cursor:pointer;">
+          <span>📱 TikTok Mode (9:16 Ratio) - DEFAULT</span>
         </label>
         <div style="margin-top:6px;padding:8px 12px;background:rgba(255,230,0,0.05);border:1px solid rgba(255,230,0,0.1);border-radius:4px;">
           <p style="font-size:9px;color:var(--text3);line-height:1.5;margin:0;">
-            ℹ️ Enable for TikTok posts. Red zones show button/description areas. Safe zones are hidden in download.
+            ℹ️ Portrait 9:16 mode enabled by default. Red zones show button/description areas. Safe zones are hidden in download.
           </p>
         </div>
       </div>
@@ -2029,6 +2029,15 @@ let currentInvoiceData = null;
 
 // Set today's date
 document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
+
+// Enable TikTok mode by default
+document.addEventListener('DOMContentLoaded', function(){
+  const tiktokCheckbox = document.getElementById('tiktokMode');
+  if(tiktokCheckbox){
+    tiktokCheckbox.checked = true;
+    toggleTikTokMode();
+  }
+});
 
 // ═══════════════════════════════════════
 //  TIKTOK MODE TOGGLE
