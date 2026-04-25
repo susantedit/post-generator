@@ -1305,19 +1305,20 @@ select option{background:var(--bg3);}
 
 /* ═══════════════════════════════════════
    TIKTOK MODE (9:16 ASPECT RATIO)
+   Only applies when checkbox is checked
 ═══════════════════════════════════════ */
 
 /* TikTok container optimization */
-.tiktok-mode #bill-outer{
-  max-width:100%;
+body.tiktok-mode #bill-outer{
+  max-width:420px;
   width:100%;
   margin:0 auto;
 }
 
-.tiktok-mode #bill-area{
+body.tiktok-mode #bill-area{
   max-width:100%;
   width:100%;
-  min-height:calc(100vw * 16 / 9); /* Maintain 9:16 ratio */
+  min-height:auto;
   max-height:none;
   overflow:visible;
   display:flex;
@@ -1325,204 +1326,204 @@ select option{background:var(--bg3);}
 }
 
 /* Optimize header for TikTok */
-.tiktok-mode .inv-header{
+body.tiktok-mode .inv-header{
   padding:18px 20px;
   flex-shrink:0;
 }
 
-.tiktok-mode .ih-logo{
+body.tiktok-mode .ih-logo{
   width:52px;
   height:52px;
 }
 
-.tiktok-mode .ih-name{
+body.tiktok-mode .ih-name{
   font-size:22px;
   letter-spacing:4px;
 }
 
-.tiktok-mode .ih-sub{
+body.tiktok-mode .ih-sub{
   font-size:9px;
   margin-top:5px;
 }
 
-.tiktok-mode .inv-num{
+body.tiktok-mode .inv-num{
   font-size:14px;
   padding:6px 12px;
 }
 
 /* Body with proper spacing */
-.tiktok-mode .inv-body{
+body.tiktok-mode .inv-body{
   padding:16px 20px 100px 20px; /* Extra bottom padding for safe zone */
   flex:1;
 }
 
 /* Meta strip - 2 columns for better fit */
-.tiktok-mode .meta-strip{
+body.tiktok-mode .meta-strip{
   grid-template-columns:1fr 1fr;
   margin-bottom:14px;
 }
 
-.tiktok-mode .meta-cell{
+body.tiktok-mode .meta-cell{
   padding:14px 16px;
 }
 
-.tiktok-mode .mc-label{
+body.tiktok-mode .mc-label{
   font-size:9px;
   letter-spacing:2px;
 }
 
-.tiktok-mode .mc-val{
+body.tiktok-mode .mc-val{
   font-size:15px;
 }
 
 /* Provider block */
-.tiktok-mode .provider-block{
+body.tiktok-mode .provider-block{
   padding:16px 18px;
   margin-bottom:14px;
 }
 
-.tiktok-mode .prov-img{
+body.tiktok-mode .prov-img{
   width:58px;
   height:58px;
 }
 
-.tiktok-mode .prov-name{
+body.tiktok-mode .prov-name{
   font-size:24px;
   letter-spacing:3px;
 }
 
-.tiktok-mode .prov-label{
+body.tiktok-mode .prov-label{
   font-size:8px;
 }
 
 /* Order block */
-.tiktok-mode .order-block{
+body.tiktok-mode .order-block{
   padding:12px 16px;
   margin-bottom:14px;
 }
 
-.tiktok-mode .ob-val{
+body.tiktok-mode .ob-val{
   font-size:15px;
 }
 
 /* Price block - larger for impact */
-.tiktok-mode .price-block{
+body.tiktok-mode .price-block{
   margin-bottom:14px;
 }
 
-.tiktok-mode .pb-main{
+body.tiktok-mode .pb-main{
   padding:22px 20px;
 }
 
-.tiktok-mode .pb-amount-label{
+body.tiktok-mode .pb-amount-label{
   font-size:9px;
   margin-bottom:8px;
 }
 
-.tiktok-mode .pb-num{
+body.tiktok-mode .pb-num{
   font-size:52px;
   letter-spacing:-2px;
 }
 
-.tiktok-mode .pb-cur{
+body.tiktok-mode .pb-cur{
   font-size:22px;
 }
 
-.tiktok-mode .pb-disc{
+body.tiktok-mode .pb-disc{
   font-size:12px;
   margin-top:10px;
 }
 
-.tiktok-mode .pb-status{
+body.tiktok-mode .pb-status{
   padding:20px;
 }
 
-.tiktok-mode .pb-status-icon{
+body.tiktok-mode .pb-status-icon{
   width:40px;
   height:40px;
   font-size:20px;
 }
 
-.tiktok-mode .pb-status-text{
+body.tiktok-mode .pb-status-text{
   font-size:16px;
   letter-spacing:2px;
 }
 
 /* Status bar */
-.tiktok-mode .status-confirm{
+body.tiktok-mode .status-confirm{
   padding:12px 16px;
   margin-bottom:14px;
 }
 
-.tiktok-mode .sc-msg{
+body.tiktok-mode .sc-msg{
   font-size:11px;
 }
 
 /* Review section */
-.tiktok-mode .review-section{
+body.tiktok-mode .review-section{
   margin-top:18px;
   padding-top:18px;
   margin-bottom:20px; /* Keep review above safe zone */
 }
 
-.tiktok-mode .review-title{
+body.tiktok-mode .review-title{
   font-size:10px;
   margin-bottom:12px;
 }
 
-.tiktok-mode .review-card{
+body.tiktok-mode .review-card{
   padding:20px;
   border-radius:10px;
 }
 
-.tiktok-mode .review-stars{
+body.tiktok-mode .review-stars{
   font-size:26px;
   margin-bottom:12px;
   letter-spacing:4px;
 }
 
-.tiktok-mode .review-text{
+body.tiktok-mode .review-text{
   font-size:15px;
   line-height:1.7;
   margin-bottom:14px;
 }
 
-.tiktok-mode .review-author{
+body.tiktok-mode .review-author{
   padding-top:12px;
 }
 
-.tiktok-mode .review-avatar{
+body.tiktok-mode .review-avatar{
   width:42px;
   height:42px;
   font-size:20px;
 }
 
-.tiktok-mode .review-name{
+body.tiktok-mode .review-name{
   font-size:15px;
   margin-bottom:5px;
 }
 
-.tiktok-mode .review-date{
+body.tiktok-mode .review-date{
   font-size:10px;
   padding:4px 8px;
 }
 
 /* Footer */
-.tiktok-mode .inv-footer{
+body.tiktok-mode .inv-footer{
   padding:14px 20px;
   flex-shrink:0;
 }
 
-.tiktok-mode .if-id{
+body.tiktok-mode .if-id{
   font-size:10px;
 }
 
-.tiktok-mode .if-right{
+body.tiktok-mode .if-right{
   font-size:9px;
 }
 
 /* TikTok safe zones indicator - only visible in editor, hidden during download */
-.tiktok-mode #bill-area::before{
+body.tiktok-mode #bill-area::before{
   content:'';
   position:absolute;
   top:0;
@@ -1535,7 +1536,7 @@ select option{background:var(--bg3);}
   border-left:1px dashed rgba(255,0,0,0.2);
 }
 
-.tiktok-mode #bill-area::after{
+body.tiktok-mode #bill-area::after{
   content:'SAFE ZONE';
   position:absolute;
   bottom:80px;
@@ -1552,36 +1553,36 @@ select option{background:var(--bg3);}
 }
 
 /* Hide safe zone indicators during download */
-.tiktok-mode.downloading #bill-area::before,
-.tiktok-mode.downloading #bill-area::after{
+body.tiktok-mode.downloading #bill-area::before,
+body.tiktok-mode.downloading #bill-area::after{
   display:none !important;
 }
 
 /* Ensure content doesn't overflow into right safe zone */
-.tiktok-mode .meta-cell,
-.tiktok-mode .provider-block,
-.tiktok-mode .order-block,
-.tiktok-mode .price-block,
-.tiktok-mode .status-confirm,
-.tiktok-mode .review-card{
+body.tiktok-mode .meta-cell,
+body.tiktok-mode .provider-block,
+body.tiktok-mode .order-block,
+body.tiktok-mode .price-block,
+body.tiktok-mode .status-confirm,
+body.tiktok-mode .review-card{
   margin-right:10px; /* Keep away from right safe zone */
 }
 
 /* Mobile TikTok adjustments */
 @media(max-width:640px){
-  .tiktok-mode #bill-area{
+  body.tiktok-mode #bill-area{
     min-height:auto;
   }
   
-  .tiktok-mode .pb-num{
+  body.tiktok-mode .pb-num{
     font-size:44px;
   }
   
-  .tiktok-mode .review-stars{
+  body.tiktok-mode .review-stars{
     font-size:22px;
   }
   
-  .tiktok-mode .review-text{
+  body.tiktok-mode .review-text{
     font-size:13px;
   }
 }
