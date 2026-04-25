@@ -1045,37 +1045,70 @@ select option{background:var(--bg3);}
   .form-panel{max-height:none;}
   .sidebar{display:none;}
   .main{margin-left:0;}
+  
+  /* Topbar adjustments */
+  .topbar{padding:0 16px;}
+  .tb-title{font-size:12px;letter-spacing:2px;}
+  .tb-sub{display:none;}
+  .tb-sep{display:none;}
+  .tb-badge{font-size:8px;padding:3px 8px;}
+  .tb-time{font-size:9px;}
+  
+  /* Stats grid to single column on tablet */
+  .stats-grid{grid-template-columns:1fr 1fr;}
 }
 
 /* ═══════════════════════════════════════
    MOBILE RESPONSIVE
 ═══════════════════════════════════════ */
 @media(max-width:640px){
-  /* Page layout */
-  .page{padding:30px 12px 40px;}
+  /* Topbar */
+  .topbar{
+    height:48px;
+    padding:0 12px;
+  }
+  .tb-title{font-size:11px;letter-spacing:2px;}
+  .tb-badge{font-size:7px;padding:2px 6px;}
+  .tb-time{font-size:8px;}
   
-  /* Sidebar hidden on mobile */
-  .sidebar{display:none;}
-  .main{margin-left:0;padding:0;}
-  
-  /* Form panel */
-  .form-panel{padding:16px;max-height:none;}
-  .fp-head{padding:12px 16px;}
-  .fp-title{font-size:14px;}
-  .fp-sub{font-size:9px;}
-  
-  /* Fields */
-  .field{margin-bottom:16px;}
-  .field .fl{font-size:10px;margin-bottom:6px;}
-  .field input,.field select,.field textarea{
-    font-size:16px !important;
-    padding:12px 14px;
+  /* Content area - force single column */
+  .content{
+    grid-template-columns:1fr !important;
+    display:block !important;
   }
   
-  /* Section tags */
-  .section-tag{margin-bottom:14px;}
-  .section-tag .num{font-size:9px;}
-  .section-tag .label{font-size:7px;letter-spacing:2px;}
+  /* Sidebar hidden on mobile */
+  .sidebar{display:none !important;}
+  .main{margin-left:0 !important;padding:0;}
+  
+  /* Form panel */
+  .form-panel{
+    padding:16px;
+    max-height:none;
+    border-right:none;
+  }
+  
+  /* Output panel */
+  .output-panel{
+    padding:16px;
+    max-height:none;
+  }
+  
+  /* Section headers */
+  .sec-head{margin-bottom:12px;}
+  .sec-num{font-size:9px;padding:2px 6px;}
+  .sec-label{font-size:8px;letter-spacing:2px;}
+  
+  /* Fields */
+  .field{margin-bottom:14px;}
+  .fl{font-size:9px;margin-bottom:5px;}
+  .field input,.field select,.field textarea{
+    font-size:16px !important;
+    padding:11px 12px;
+  }
+  
+  /* Grid 2 columns */
+  .grid2{gap:8px;}
   
   /* Discount display */
   #discount-display div{
@@ -1085,32 +1118,45 @@ select option{background:var(--bg3);}
   
   /* Generate button */
   .gen-btn{
-    padding:16px;
-    font-size:11px;
+    padding:14px;
+    font-size:10px;
     letter-spacing:2px;
-    margin-top:20px;
+    margin-top:16px;
   }
   
   /* Action row */
   .action-row{
-    flex-direction:row;
+    grid-template-columns:1fr 1fr;
     gap:8px;
-    margin-top:12px;
+    margin-top:10px;
   }
   .sec-btn{
-    padding:14px 12px;
+    padding:12px 10px;
     font-size:9px;
     letter-spacing:1px;
   }
   
-  /* Stats card */
-  .stat-card{padding:14px;}
-  .sc-label{font-size:9px;}
-  .sc-value{font-size:20px;}
-  .stat-card.featured .sc-value{font-size:24px;}
+  /* Output header */
+  .out-header{margin-bottom:16px;}
+  .out-title{font-size:10px;}
+  .icon-btn{width:28px;height:28px;font-size:12px;}
+  
+  /* Stats grid - 2 columns on mobile */
+  .stats-grid{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .stat-card{padding:12px;}
+  .sc-label{font-size:7px;letter-spacing:2px;}
+  .sc-value{font-size:18px;}
+  .stat-card.featured .sc-value{font-size:20px;}
   
   /* Invoice */
-  #bill-outer{margin-top:20px;}
+  #bill-outer{
+    margin-top:16px;
+    max-width:100%;
+  }
   #bill-area{
     clip-path:polygon(
       0 0,
@@ -1124,139 +1170,140 @@ select option{background:var(--bg3);}
   
   /* Invoice header */
   .inv-header{
-    padding:16px;
+    padding:14px 16px;
     flex-direction:column;
-    gap:12px;
+    gap:10px;
     text-align:center;
   }
   .ih-brand{
     flex-direction:column;
-    gap:10px;
+    gap:8px;
   }
-  .ih-logo{width:40px;height:40px;}
-  .ih-name{font-size:16px;letter-spacing:3px;}
-  .ih-sub{font-size:8px;}
+  .ih-logo{width:38px;height:38px;}
+  .ih-name{font-size:16px;letter-spacing:2px;}
+  .ih-sub{font-size:7px;margin-top:3px;}
   .ih-right{text-align:center;}
-  .inv-num-label{font-size:8px;}
-  .inv-num{font-size:11px;padding:4px 10px;}
+  .inv-num-label{font-size:7px;}
+  .inv-num{font-size:11px;padding:4px 8px;}
   
   /* Invoice body */
-  .inv-body{padding:16px;}
-  .inv-body::before{font-size:7px;right:6px;}
-  .inv-body::after{right:3px;width:1.5px;}
+  .inv-body{padding:14px 16px;}
+  .inv-body::before{font-size:6px;right:5px;}
+  .inv-body::after{right:2px;width:1.5px;}
   
-  /* Meta strip */
+  /* Meta strip - 2 columns */
   .meta-strip{
     grid-template-columns:1fr 1fr;
     gap:1px;
-    margin-bottom:14px;
+    margin-bottom:12px;
   }
-  .meta-cell{padding:12px;}
-  .mc-label{font-size:8px;}
+  .meta-cell{padding:10px 12px;}
+  .mc-label{font-size:8px;letter-spacing:1px;}
   .mc-val{font-size:13px;}
   
   /* Provider block */
   .provider-block{
     gap:12px;
-    padding:14px;
-  }
-  .prov-img{width:50px;height:50px;}
-  .prov-label{font-size:8px;}
-  .prov-name{font-size:18px;}
-  
-  /* Detail row */
-  .detail-row{
     padding:12px 14px;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:6px;
+    margin-bottom:12px;
   }
-  .dr-label{font-size:8px;}
-  .dr-val{font-size:13px;text-align:left;}
+  .prov-img{width:48px;height:48px;}
+  .prov-label{font-size:7px;}
+  .prov-name{font-size:20px;letter-spacing:2px;}
+  
+  /* Order block */
+  .order-block{
+    padding:10px 14px;
+    margin-bottom:12px;
+  }
+  .ob-label{font-size:7px;}
+  .ob-val{font-size:13px;}
   
   /* Price block */
   .price-block{
     flex-direction:column;
-    margin-bottom:14px;
+    margin-bottom:12px;
   }
-  .pb-main{padding:20px 16px;}
-  .pb-amount-label{font-size:10px;}
-  .pb-amount{font-size:36px;}
+  .pb-main{padding:18px 16px;}
+  .pb-amount-label{font-size:8px;}
+  .pb-num{font-size:38px;}
   .pb-cur{font-size:16px;}
   .pb-disc{font-size:10px;margin-top:8px;}
   
   .pb-status{
-    padding:16px;
+    width:100%;
+    padding:14px;
     flex-direction:row;
     gap:10px;
     justify-content:center;
   }
-  .pb-status-icon{width:28px;height:28px;font-size:16px;}
-  .pb-status-text{font-size:13px;}
+  .pb-status-icon{width:28px;height:28px;font-size:14px;}
+  .pb-status-text{font-size:12px;}
   
   /* Status confirm */
-  .status-confirm{padding:14px 16px;}
-  .sc-msg{font-size:10px;}
+  .status-confirm{
+    padding:10px 14px;
+    margin-bottom:12px;
+  }
+  .sc-msg{font-size:9px;}
   
   /* Review section */
-  .review-section{margin-top:16px;padding-top:16px;}
+  .review-section{margin-top:14px;padding-top:14px;}
   .review-title{font-size:9px;}
-  .review-card{padding:16px;}
+  .review-card{padding:14px;border-radius:8px;}
   .review-card::before,
   .review-card::after{width:10px;height:10px;}
-  .review-stars{font-size:18px;margin-bottom:10px;}
-  .review-text{font-size:12px;margin-bottom:12px;}
+  .review-stars{font-size:18px;margin-bottom:10px;letter-spacing:2px;}
+  .review-text{font-size:12px;margin-bottom:12px;line-height:1.5;}
   .review-author{gap:10px;padding-top:10px;}
-  .review-avatar{width:34px;height:34px;font-size:16px;}
+  .review-avatar{width:32px;height:32px;font-size:14px;}
   .review-name{font-size:12px;}
-  .review-date{font-size:9px;padding:2px 6px;}
+  .review-date{font-size:8px;padding:2px 6px;}
   
   /* Invoice footer */
   .inv-footer{
-    padding:12px 16px;
+    padding:10px 16px;
     flex-direction:column;
-    gap:8px;
+    gap:6px;
     text-align:center;
   }
-  .if-id{font-size:9px;}
-  .if-right{font-size:8px;}
-  .if-dots{gap:4px;}
+  .if-id{font-size:8px;}
+  .if-right{font-size:7px;}
+  .if-dots{gap:3px;}
   .if-dot{width:3px;height:3px;}
   
   /* Download strip */
   .dl-strip{
-    flex-direction:column;
+    grid-template-columns:1fr;
     gap:8px;
-    margin-top:14px;
+    margin-top:12px;
   }
   .dl-btn{
-    padding:14px;
+    padding:12px;
     font-size:9px;
     letter-spacing:1px;
   }
   
   /* Modal */
-  .modal-content{
+  .modal{
     max-width:95%;
     margin:0 10px;
-    border-radius:12px;
   }
-  .modal-header{padding:14px 16px;}
-  .modal-title{font-size:18px;}
-  .modal-close{width:28px;height:28px;font-size:16px;}
-  .modal-body{padding:16px;}
-  .history-item{padding:12px;margin-bottom:10px;}
-  .hi-header{flex-wrap:wrap;gap:8px;}
-  .hi-oid{font-size:11px;}
-  .hi-badge{font-size:8px;padding:3px 8px;}
+  .modal-head{padding:12px 16px;}
+  .modal-title{font-size:12px;}
+  .modal-close{width:26px;height:26px;font-size:14px;}
+  .modal-body{padding:14px 16px;}
+  .hist-item{padding:10px;margin-bottom:8px;}
+  .hi-oid{font-size:10px;}
+  .hi-badge{font-size:7px;padding:2px 6px;}
   .hi-info{font-size:10px;}
-  .hi-price{font-size:14px;margin-top:6px;}
+  .hi-price{font-size:13px;}
   
   /* Toast */
   .toast{
-    font-size:10px;
-    padding:12px 20px;
-    bottom:20px;
+    font-size:9px;
+    padding:10px 16px;
+    bottom:16px;
     max-width:90%;
   }
   
