@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="0; url=invoice.html">
+<title>Redirecting to Invoice Generator...</title>
+<style>
+body{
+  margin:0;
+  padding:0;
+  background:#0A0A0A;
+  color:#FFE600;
+  font-family:monospace;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  text-align:center;
+}
+.loader{
+  font-size:20px;
+  letter-spacing:3px;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:0.3}
+}
+</style>
+</head>
+<body>
+<div class="loader">⚡ Loading Invoice Generator...</div>
+<script>
+window.location.href = 'invoice.html';
+</script>
+</body>
+</html>
