@@ -43,6 +43,7 @@ body{
   min-height:100vh;
   display:flex;
   overflow-x:hidden;
+  overflow-y:auto;
 }
 
 /* ══════════════════════════
@@ -151,6 +152,8 @@ body::after{
   flex-direction:column;
   position:relative;z-index:1;
   min-height:100vh;
+  overflow-y:auto;
+  overflow-x:hidden;
 }
 
 /* ══════════════════════════
@@ -198,14 +201,14 @@ body::after{
   display:grid;
   grid-template-columns:380px 1fr;
   gap:0;
-  max-height:calc(100vh - 56px);
-  overflow:hidden;
+  min-height:calc(100vh - 56px);
+  overflow:visible;
 }
 
 /* LEFT PANEL — Form */
 .form-panel{
   border-right:1px solid var(--border2);
-  overflow-y:auto;
+  overflow-y:visible;
   padding:24px;
   background:var(--bg2);
   scrollbar-width:thin;
@@ -217,7 +220,7 @@ body::after{
 
 /* RIGHT PANEL — Output */
 .output-panel{
-  overflow-y:auto;
+  overflow-y:visible;
   padding:24px;
   background:var(--bg);
   scrollbar-width:thin;
@@ -1040,9 +1043,13 @@ select option{background:var(--bg3);}
 @keyframes revUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
 @media(max-width:860px){
-  .content{grid-template-columns:1fr;}
-  .output-panel{max-height:none;}
-  .form-panel{max-height:none;}
+  .content{
+    grid-template-columns:1fr;
+    min-height:auto;
+    overflow:visible;
+  }
+  .output-panel{max-height:none;overflow:visible;}
+  .form-panel{max-height:none;overflow:visible;}
   .sidebar{display:none;}
   .main{margin-left:0;}
   
@@ -1778,14 +1785,21 @@ body.tiktok-mode .review-card{
 
       <div class="field" style="margin-top:10px;">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);">
-          <input type="checkbox" id="tiktokMode" onchange="toggleTikTokMode()" style="width:auto;cursor:pointer;">
-          <span>📱 TikTok Mode (9:16 Ratio)</span>
+          <input type="checkbox" id="tiktokMode" onchange="toggleTikTokMode()" checked style="width:auto;cursor:pointer;">
+          <span>📱 TikTok Mode (9:16 Ratio) - DEFAULT</span>
         </label>
         <div style="margin-top:6px;padding:8px 12px;background:rgba(255,230,0,0.05);border:1px solid rgba(255,230,0,0.1);border-radius:4px;">
           <p style="font-size:9px;color:var(--text3);line-height:1.5;margin:0;">
-            ℹ️ Enable for TikTok posts. Red zones show button/description areas. Safe zones are hidden in download.
+            ℹ️ Portrait 9:16 mode enabled by default. Red zones show button/description areas. Safe zones are hidden in download.
           </p>
         </div>
+      </div>
+
+      <div class="field" style="margin-top:10px;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);">
+          <input type="checkbox" id="forceMobile" onchange="toggleForceMobile()" style="width:auto;cursor:pointer;">
+          <span>🔧 Force Mobile View (Testing)</span>
+        </label>
       </div>
 
       <button class="gen-btn" onclick="generateBill()">
@@ -2016,6 +2030,15 @@ let currentInvoiceData = null;
 // Set today's date
 document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
 
+// Enable TikTok mode by default
+document.addEventListener('DOMContentLoaded', function(){
+  const tiktokCheckbox = document.getElementById('tiktokMode');
+  if(tiktokCheckbox){
+    tiktokCheckbox.checked = true;
+    toggleTikTokMode();
+  }
+});
+
 // ═══════════════════════════════════════
 //  TIKTOK MODE TOGGLE
 // ═══════════════════════════════════════
@@ -2035,6 +2058,22 @@ function toggleTikTokMode(){
   } else {
     body.classList.remove('tiktok-mode');
     showToast('💻 Normal Mode Restored');
+  }
+}
+
+// ═══════════════════════════════════════
+//  FORCE MOBILE VIEW (Testing)
+// ═══════════════════════════════════════
+function toggleForceMobile(){
+  const isEnabled = document.getElementById('forceMobile').checked;
+  const html = document.documentElement;
+  
+  if(isEnabled){
+    html.style.zoom = '0.5';
+    showToast('📱 Mobile View Forced (50% zoom)');
+  } else {
+    html.style.zoom = '1';
+    showToast('💻 Normal Zoom Restored');
   }
 }
 
@@ -2300,7 +2339,7 @@ function downloadBill(){
   
   // Convert external images to base64 first
   convertImagesToBase64(function() {
-    showToast('📸 Capturing invoice...');
+    showToast('📸 Capturing invoice in 9:16 ratio...');
     
     setTimeout(()=>{
       const billArea = document.getElementById('bill-area');
@@ -2317,10 +2356,19 @@ function downloadBill(){
         return;
       }
       
-      console.log('Starting capture...');
+      console.log('Starting capture with 9:16 ratio...');
       
       // Add downloading class to hide safe zone indicators
       body.classList.add('downloading');
+      
+      // Get the bill area dimensions
+      const billWidth = billArea.offsetWidth;
+      const billHeight = billArea.offsetHeight;
+      
+      // Calculate perfect 9:16 ratio dimensions
+      // Width: 1080px (standard TikTok), Height: 1920px (9:16 ratio)
+      const targetWidth = 1080;
+      const targetHeight = 1920;
       
       // Now all images are base64, safe to capture
       html2canvas(billArea, {
@@ -2328,17 +2376,39 @@ function downloadBill(){
         backgroundColor: '#0B0F14',
         logging: false,
         useCORS: false,
-        allowTaint: true
+        allowTaint: true,
+        width: billWidth,
+        height: billHeight
       })
         .then(canvas => {
           console.log('Canvas created successfully');
+          
+          // Create a new canvas with perfect 9:16 ratio
+          const finalCanvas = document.createElement('canvas');
+          finalCanvas.width = targetWidth;
+          finalCanvas.height = targetHeight;
+          
+          const ctx = finalCanvas.getContext('2d');
+          ctx.fillStyle = '#0B0F14';
+          ctx.fillRect(0, 0, targetWidth, targetHeight);
+          
+          // Calculate scaling to fit content while maintaining aspect ratio
+          const scale = Math.min(targetWidth / canvas.width, targetHeight / canvas.height);
+          const scaledWidth = canvas.width * scale;
+          const scaledHeight = canvas.height * scale;
+          
+          // Center the content
+          const x = (targetWidth - scaledWidth) / 2;
+          const y = (targetHeight - scaledHeight) / 2;
+          
+          ctx.drawImage(canvas, x, y, scaledWidth, scaledHeight);
           
           // Remove downloading class
           body.classList.remove('downloading');
           
           try {
             // Use toBlob for download
-            canvas.toBlob(function(blob) {
+            finalCanvas.toBlob(function(blob) {
               if(!blob) {
                 showToast('❌ Failed to create image');
                 return;
@@ -2347,7 +2417,7 @@ function downloadBill(){
               // Create download link
               const url = URL.createObjectURL(blob);
               const link = document.createElement('a');
-              link.download = currentOID + '.png';
+              link.download = currentOID + '_9-16.png';
               link.href = url;
               link.style.display = 'none';
               document.body.appendChild(link);
@@ -2357,8 +2427,8 @@ function downloadBill(){
               // Clean up
               setTimeout(() => URL.revokeObjectURL(url), 100);
               
-              showToast('✅ Invoice downloaded!');
-              console.log('Download successful');
+              showToast('✅ Downloaded 9:16 (1080x1920)!');
+              console.log('Download successful - 9:16 ratio');
             }, 'image/png');
             
           } catch(err) {
@@ -2486,9 +2556,9 @@ function showCustomerReview(customerName, date){
   reviewStars.textContent = stars;
   
   // Show review section
-  reviewSection.style.display = 'block'; 
+  reviewSection.style.display = 'block';
 }
 
 </script>
 </body>
-</html>
+</html> 
