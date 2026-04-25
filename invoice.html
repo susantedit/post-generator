@@ -43,6 +43,7 @@ body{
   min-height:100vh;
   display:flex;
   overflow-x:hidden;
+  overflow-y:auto;
 }
 
 /* ══════════════════════════
@@ -151,6 +152,7 @@ body::after{
   flex-direction:column;
   position:relative;z-index:1;
   min-height:100vh;
+  overflow-y:auto;
 }
 
 /* ══════════════════════════
@@ -198,14 +200,14 @@ body::after{
   display:grid;
   grid-template-columns:380px 1fr;
   gap:0;
-  max-height:calc(100vh - 56px);
-  overflow:hidden;
+  min-height:calc(100vh - 56px);
+  overflow:visible;
 }
 
 /* LEFT PANEL — Form */
 .form-panel{
   border-right:1px solid var(--border2);
-  overflow-y:auto;
+  overflow-y:visible;
   padding:24px;
   background:var(--bg2);
   scrollbar-width:thin;
@@ -217,7 +219,7 @@ body::after{
 
 /* RIGHT PANEL — Output */
 .output-panel{
-  overflow-y:auto;
+  overflow-y:visible;
   padding:24px;
   background:var(--bg);
   scrollbar-width:thin;
@@ -1786,6 +1788,13 @@ body.tiktok-mode .review-card{
             ℹ️ Enable for TikTok posts. Red zones show button/description areas. Safe zones are hidden in download.
           </p>
         </div>
+      </div>
+
+      <div class="field" style="margin-top:10px;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);">
+          <input type="checkbox" id="forceMobile" onchange="toggleForceMobile()" style="width:auto;cursor:pointer;">
+          <span>🔧 Force Mobile View (Testing)</span>
+        </label>
       </div>
 
       <button class="gen-btn" onclick="generateBill()">
