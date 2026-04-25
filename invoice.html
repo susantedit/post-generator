@@ -153,6 +153,7 @@ body::after{
   position:relative;z-index:1;
   min-height:100vh;
   overflow-y:auto;
+  overflow-x:hidden;
 }
 
 /* ══════════════════════════
@@ -1042,9 +1043,13 @@ select option{background:var(--bg3);}
 @keyframes revUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
 @media(max-width:860px){
-  .content{grid-template-columns:1fr;}
-  .output-panel{max-height:none;}
-  .form-panel{max-height:none;}
+  .content{
+    grid-template-columns:1fr;
+    min-height:auto;
+    overflow:visible;
+  }
+  .output-panel{max-height:none;overflow:visible;}
+  .form-panel{max-height:none;overflow:visible;}
   .sidebar{display:none;}
   .main{margin-left:0;}
   
@@ -2044,6 +2049,22 @@ function toggleTikTokMode(){
   } else {
     body.classList.remove('tiktok-mode');
     showToast('💻 Normal Mode Restored');
+  }
+}
+
+// ═══════════════════════════════════════
+//  FORCE MOBILE VIEW (Testing)
+// ═══════════════════════════════════════
+function toggleForceMobile(){
+  const isEnabled = document.getElementById('forceMobile').checked;
+  const html = document.documentElement;
+  
+  if(isEnabled){
+    html.style.zoom = '0.5';
+    showToast('📱 Mobile View Forced (50% zoom)');
+  } else {
+    html.style.zoom = '1';
+    showToast('💻 Normal Zoom Restored');
   }
 }
 
