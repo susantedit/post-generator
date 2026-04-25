@@ -2339,7 +2339,7 @@ function downloadBill(){
   
   // Convert external images to base64 first
   convertImagesToBase64(function() {
-    showToast('📸 Capturing invoice...');
+    showToast('📸 Capturing invoice in 9:16 ratio...');
     
     setTimeout(()=>{
       const billArea = document.getElementById('bill-area');
@@ -2356,10 +2356,19 @@ function downloadBill(){
         return;
       }
       
-      console.log('Starting capture...');
+      console.log('Starting capture with 9:16 ratio...');
       
       // Add downloading class to hide safe zone indicators
       body.classList.add('downloading');
+      
+      // Get the bill area dimensions
+      const billWidth = billArea.offsetWidth;
+      const billHeight = billArea.offsetHeight;
+      
+      // Calculate perfect 9:16 ratio dimensions
+      // Width: 1080px (standard TikTok), Height: 1920px (9:16 ratio)
+      const targetWidth = 1080;
+      const targetHeight = 1920;
       
       // Now all images are base64, safe to capture
       html2canvas(billArea, {
@@ -2367,17 +2376,39 @@ function downloadBill(){
         backgroundColor: '#0B0F14',
         logging: false,
         useCORS: false,
-        allowTaint: true
+        allowTaint: true,
+        width: billWidth,
+        height: billHeight
       })
         .then(canvas => {
           console.log('Canvas created successfully');
+          
+          // Create a new canvas with perfect 9:16 ratio
+          const finalCanvas = document.createElement('canvas');
+          finalCanvas.width = targetWidth;
+          finalCanvas.height = targetHeight;
+          
+          const ctx = finalCanvas.getContext('2d');
+          ctx.fillStyle = '#0B0F14';
+          ctx.fillRect(0, 0, targetWidth, targetHeight);
+          
+          // Calculate scaling to fit content while maintaining aspect ratio
+          const scale = Math.min(targetWidth / canvas.width, targetHeight / canvas.height);
+          const scaledWidth = canvas.width * scale;
+          const scaledHeight = canvas.height * scale;
+          
+          // Center the content
+          const x = (targetWidth - scaledWidth) / 2;
+          const y = (targetHeight - scaledHeight) / 2;
+          
+          ctx.drawImage(canvas, x, y, scaledWidth, scaledHeight);
           
           // Remove downloading class
           body.classList.remove('downloading');
           
           try {
             // Use toBlob for download
-            canvas.toBlob(function(blob) {
+            finalCanvas.toBlob(function(blob) {
               if(!blob) {
                 showToast('❌ Failed to create image');
                 return;
@@ -2386,7 +2417,7 @@ function downloadBill(){
               // Create download link
               const url = URL.createObjectURL(blob);
               const link = document.createElement('a');
-              link.download = currentOID + '.png';
+              link.download = currentOID + '_9-16.png';
               link.href = url;
               link.style.display = 'none';
               document.body.appendChild(link);
@@ -2396,8 +2427,8 @@ function downloadBill(){
               // Clean up
               setTimeout(() => URL.revokeObjectURL(url), 100);
               
-              showToast('✅ Invoice downloaded!');
-              console.log('Download successful');
+              showToast('✅ Downloaded 9:16 (1080x1920)!');
+              console.log('Download successful - 9:16 ratio');
             }, 'image/png');
             
           } catch(err) {
