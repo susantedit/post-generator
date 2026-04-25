@@ -954,6 +954,8 @@ select option{background:var(--bg3);}
 .dl-strip{
   display:grid;grid-template-columns:1fr 1fr;
   gap:8px;margin-top:14px;
+  position:relative;
+  z-index:10;
 }
 .dl-btn{
   padding:10px;
@@ -970,6 +972,9 @@ select option{background:var(--bg3);}
   border-color:rgba(255,230,0,0.4);color:var(--y);
   background:var(--yg2);
   box-shadow:0 0 10px rgba(255,230,0,0.1);
+}
+.dl-btn:active{
+  transform:scale(0.98);
 }
 
 /* ══════════════════════════
@@ -1783,24 +1788,7 @@ body.tiktok-mode .review-card{
         <textarea id="reviewMessage" placeholder="Write a custom review message (optional)..." style="width:100%;background:var(--card);border:1px solid rgba(0,229,255,0.2);color:var(--text);padding:14px;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:14px;min-height:100px;resize:vertical;transition:0.3s;" onfocus="this.style.borderColor='var(--neon)';this.style.boxShadow='0 0 12px rgba(0,229,255,0.5)'" onblur="this.style.borderColor='rgba(0,229,255,0.2)';this.style.boxShadow='none'"></textarea>
       </div>
 
-      <div class="field" style="margin-top:10px;">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);">
-          <input type="checkbox" id="tiktokMode" onchange="toggleTikTokMode()" checked style="width:auto;cursor:pointer;">
-          <span>📱 TikTok Mode (9:16 Ratio) - DEFAULT</span>
-        </label>
-        <div style="margin-top:6px;padding:8px 12px;background:rgba(255,230,0,0.05);border:1px solid rgba(255,230,0,0.1);border-radius:4px;">
-          <p style="font-size:9px;color:var(--text3);line-height:1.5;margin:0;">
-            ℹ️ Portrait 9:16 mode enabled by default. Red zones show button/description areas. Safe zones are hidden in download.
-          </p>
-        </div>
-      </div>
 
-      <div class="field" style="margin-top:10px;">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);">
-          <input type="checkbox" id="forceMobile" onchange="toggleForceMobile()" style="width:auto;cursor:pointer;">
-          <span>🔧 Force Mobile View (Testing)</span>
-        </label>
-      </div>
 
       <button class="gen-btn" onclick="generateBill()">
         ◈ &nbsp; GENERATE INVOICE
@@ -2030,52 +2018,10 @@ let currentInvoiceData = null;
 // Set today's date
 document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
 
-// Enable TikTok mode by default
+// Enable TikTok mode by default on page load
 document.addEventListener('DOMContentLoaded', function(){
-  const tiktokCheckbox = document.getElementById('tiktokMode');
-  if(tiktokCheckbox){
-    tiktokCheckbox.checked = true;
-    toggleTikTokMode();
-  }
+  document.body.classList.add('tiktok-mode');
 });
-
-// ═══════════════════════════════════════
-//  TIKTOK MODE TOGGLE
-// ═══════════════════════════════════════
-function toggleTikTokMode(){
-  const isEnabled = document.getElementById('tiktokMode').checked;
-  const body = document.body;
-  const billOuter = document.getElementById('bill-outer');
-  
-  if(isEnabled){
-    body.classList.add('tiktok-mode');
-    showToast('📱 TikTok Mode Enabled (9:16) • Safe zones visible');
-    
-    // Scroll to invoice for better view
-    setTimeout(() => {
-      billOuter.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
-  } else {
-    body.classList.remove('tiktok-mode');
-    showToast('💻 Normal Mode Restored');
-  }
-}
-
-// ═══════════════════════════════════════
-//  FORCE MOBILE VIEW (Testing)
-// ═══════════════════════════════════════
-function toggleForceMobile(){
-  const isEnabled = document.getElementById('forceMobile').checked;
-  const html = document.documentElement;
-  
-  if(isEnabled){
-    html.style.zoom = '0.5';
-    showToast('📱 Mobile View Forced (50% zoom)');
-  } else {
-    html.style.zoom = '1';
-    showToast('💻 Normal Zoom Restored');
-  }
-}
 
 // Live clock
 function updateClock(){
