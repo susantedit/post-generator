@@ -806,17 +806,17 @@ select option{background:var(--bg3);}
 .status-confirm.failed .sc-msg{color:var(--red);}
 
 /* Proof */
-#proof-section{display:none;margin-bottom:12px;}
+#proof-section{display:none;margin-bottom:6px;}
 .proof-wrap{
   border:1px solid rgba(255,230,0,0.12);
-  padding:10px;background:var(--bg3);
+  padding:6px;background:var(--bg3);
 }
 .proof-label{
-  font-size:8px;letter-spacing:2px;color:var(--text3);
+  font-size:7px;letter-spacing:1px;color:var(--text3);
   text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-  margin-bottom:6px;
+  margin-bottom:4px;
 }
-#proof-img{max-width:100%;height:auto;border-radius:2px;max-height:120px;}
+#proof-img{max-width:100%;height:auto;border-radius:2px;max-height:80px;}
 
 /* INVOICE FOOTER */
 .inv-footer{
@@ -1398,36 +1398,56 @@ body.tiktok-mode #bill-area{
   aspect-ratio:9/16;
 }
 
-/* COMPACT HEADER - 15% */
+/* TikTok container optimization */
+body.tiktok-mode #bill-outer{
+  max-width:100%;
+  width:100%;
+  margin:0 auto;
+  padding:0;
+}
+
+body.tiktok-mode #bill-area{
+  max-width:100%;
+  width:100%;
+  min-height:auto;
+  max-height:none;
+  overflow:visible;
+  display:flex;
+  flex-direction:column;
+  aspect-ratio:9/16;
+  background:var(--bg2);
+}
+
+/* COMPACT HEADER - 12% */
 body.tiktok-mode .inv-header{
-  padding:14px 16px;
+  padding:10px 12px;
   flex-shrink:0;
-  gap:10px;
+  gap:8px;
 }
 
 body.tiktok-mode .ih-logo{
-  width:48px;
-  height:48px;
+  width:40px;
+  height:40px;
 }
 
 body.tiktok-mode .ih-name{
-  font-size:20px;
-  letter-spacing:3px;
+  font-size:16px;
+  letter-spacing:2px;
 }
 
 body.tiktok-mode .ih-sub{
-  font-size:8px;
-  margin-top:3px;
+  font-size:7px;
+  margin-top:2px;
 }
 
 body.tiktok-mode .inv-num{
-  font-size:13px;
-  padding:5px 10px;
+  font-size:11px;
+  padding:4px 8px;
 }
 
-/* COMPACT BODY - 70% */
+/* COMPACT BODY - 76% */
 body.tiktok-mode .inv-body{
-  padding:14px 16px;
+  padding:10px 12px;
   flex:1;
   overflow-y:auto;
 }
@@ -1435,191 +1455,199 @@ body.tiktok-mode .inv-body{
 /* Meta strip - compact 2x2 grid */
 body.tiktok-mode .meta-strip{
   grid-template-columns:1fr 1fr;
-  gap:1px;
-  margin-bottom:12px;
+  gap:0px;
+  margin-bottom:8px;
 }
 
 body.tiktok-mode .meta-cell{
-  padding:10px 12px;
+  padding:8px 10px;
+  background:rgba(255,230,0,0.03);
+  border:1px solid rgba(255,230,0,0.1);
 }
 
 body.tiktok-mode .mc-label{
-  font-size:8px;
-  letter-spacing:1px;
+  font-size:7px;
+  letter-spacing:0.5px;
 }
 
 body.tiktok-mode .mc-val{
-  font-size:14px;
+  font-size:12px;
   font-weight:600;
+  margin-top:3px;
 }
 
 /* Provider block - compact */
 body.tiktok-mode .provider-block{
-  padding:12px 14px;
-  margin-bottom:12px;
-  gap:12px;
+  padding:8px 10px;
+  margin-bottom:8px;
+  gap:8px;
 }
 
 body.tiktok-mode .prov-img{
-  width:50px;
-  height:50px;
+  width:40px;
+  height:40px;
 }
 
 body.tiktok-mode .prov-name{
-  font-size:20px;
-  letter-spacing:2px;
+  font-size:16px;
+  letter-spacing:1px;
 }
 
 body.tiktok-mode .prov-label{
-  font-size:8px;
+  font-size:7px;
 }
 
 /* Order block - compact */
 body.tiktok-mode .order-block{
-  padding:10px 14px;
-  margin-bottom:12px;
+  padding:8px 10px;
+  margin-bottom:8px;
+  font-size:12px;
 }
 
 body.tiktok-mode .ob-label{
-  font-size:8px;
+  font-size:7px;
 }
 
 body.tiktok-mode .ob-val{
-  font-size:14px;
+  font-size:12px;
   font-weight:600;
+  margin-top:2px;
 }
 
-/* Price block - FEATURED (largest) */
+/* Price block - FEATURED */
 body.tiktok-mode .price-block{
-  margin-bottom:12px;
-  border:2px solid rgba(255,230,0,0.4);
-  background:rgba(255,230,0,0.08);
+  margin-bottom:8px;
+  border:2px solid rgba(255,230,0,0.5);
+  background:rgba(255,230,0,0.1);
 }
 
 body.tiktok-mode .pb-main{
-  padding:18px 16px;
+  padding:12px 10px;
 }
 
 body.tiktok-mode .pb-amount-label{
-  font-size:9px;
-  margin-bottom:8px;
+  font-size:8px;
+  margin-bottom:4px;
   font-weight:600;
 }
 
 body.tiktok-mode .pb-num{
-  font-size:52px;
-  letter-spacing:-2px;
+  font-size:44px;
+  letter-spacing:-1px;
   font-weight:900;
+  line-height:1;
 }
 
 body.tiktok-mode .pb-cur{
-  font-size:22px;
+  font-size:18px;
   font-weight:700;
 }
 
 body.tiktok-mode .pb-disc{
-  font-size:11px;
-  margin-top:10px;
+  font-size:9px;
+  margin-top:6px;
   font-weight:500;
 }
 
 body.tiktok-mode .pb-status{
   width:100%;
-  padding:14px;
+  padding:10px;
   flex-direction:row;
-  gap:10px;
+  gap:8px;
   justify-content:center;
 }
 
 body.tiktok-mode .pb-status-icon{
-  width:36px;
-  height:36px;
-  font-size:20px;
+  width:30px;
+  height:30px;
+  font-size:16px;
 }
 
 body.tiktok-mode .pb-status-text{
-  font-size:15px;
-  letter-spacing:2px;
+  font-size:13px;
+  letter-spacing:1px;
   font-weight:700;
 }
 
-/* Status bar - compact */
+/* Status bar */
 body.tiktok-mode .status-confirm{
-  padding:10px 14px;
-  margin-bottom:12px;
+  padding:8px 10px;
+  margin-bottom:8px;
+  font-size:10px;
 }
 
 body.tiktok-mode .sc-msg{
-  font-size:11px;
+  font-size:10px;
   font-weight:600;
 }
 
-/* Review section - compact */
+/* Review section */
 body.tiktok-mode .review-section{
-  margin-top:12px;
-  padding-top:12px;
-  margin-bottom:12px;
+  margin-top:8px;
+  padding-top:8px;
+  margin-bottom:8px;
 }
 
 body.tiktok-mode .review-title{
-  font-size:10px;
-  margin-bottom:10px;
+  font-size:9px;
+  margin-bottom:6px;
   font-weight:700;
 }
 
 body.tiktok-mode .review-card{
-  padding:14px;
-  border-radius:8px;
+  padding:10px;
+  border-radius:6px;
 }
 
 body.tiktok-mode .review-stars{
-  font-size:22px;
-  margin-bottom:10px;
-  letter-spacing:3px;
+  font-size:18px;
+  margin-bottom:6px;
+  letter-spacing:2px;
 }
 
 body.tiktok-mode .review-text{
-  font-size:13px;
-  line-height:1.5;
-  margin-bottom:12px;
+  font-size:11px;
+  line-height:1.4;
+  margin-bottom:8px;
   font-weight:500;
 }
 
 body.tiktok-mode .review-author{
-  padding-top:10px;
+  padding-top:6px;
+  gap:8px;
 }
 
 body.tiktok-mode .review-avatar{
-  width:40px;
-  height:40px;
-  font-size:18px;
+  width:32px;
+  height:32px;
+  font-size:16px;
 }
 
 body.tiktok-mode .review-name{
-  font-size:13px;
-  margin-bottom:4px;
+  font-size:11px;
+  margin-bottom:2px;
   font-weight:700;
 }
 
 body.tiktok-mode .review-date{
-  font-size:10px;
-  padding:3px 8px;
+  font-size:8px;
+  padding:2px 6px;
   font-weight:600;
 }
 
-/* COMPACT FOOTER - 15% */
+/* COMPACT FOOTER - 12% */
 body.tiktok-mode .inv-footer{
-  padding:10px 16px;
+  padding:8px 12px;
   flex-shrink:0;
 }
 
 body.tiktok-mode .if-id{
-  font-size:9px;
+  font-size:8px;
   font-weight:600;
 }
 
 body.tiktok-mode .if-right{
-  font-size:9px;
+  font-size:8px;
   font-weight:600;
 }
 
