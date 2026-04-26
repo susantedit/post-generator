@@ -44,6 +44,7 @@ body{
   display:flex;
   overflow-x:hidden;
   overflow-y:auto;
+  flex-direction:column;
 }
 
 /* ══════════════════════════
@@ -77,18 +78,17 @@ body::after{
 @keyframes scanMove{from{transform:translateX(0)}to{transform:translateX(80px)}}
 
 /* ══════════════════════════
-   LEFT SIDEBAR
+   LEFT SIDEBAR - HIDDEN
 ══════════════════════════ */
 .sidebar{
-  position:fixed;
-  left:0;top:0;bottom:0;
-  width:64px;
-  background:var(--bg2);
-  border-right:1px solid var(--border);
-  z-index:100;
-  display:flex;flex-direction:column;align-items:center;
-  padding:24px 0;
-  gap:8px;
+  display:none !important;
+}
+
+/* ══════════════════════════
+   TOP BAR - HIDDEN
+══════════════════════════ */
+.topbar{
+  display:none !important;
 }
 .sidebar::after{
   content:'';
@@ -146,7 +146,7 @@ body::after{
    MAIN LAYOUT
 ══════════════════════════ */
 .main{
-  margin-left:64px;
+  margin-left:0;
   flex:1;
   display:flex;
   flex-direction:column;
@@ -154,6 +154,7 @@ body::after{
   min-height:100vh;
   overflow-y:auto;
   overflow-x:hidden;
+  width:100%;
 }
 
 /* ══════════════════════════
@@ -199,20 +200,15 @@ body::after{
 .content{
   flex:1;
   display:grid;
-  grid-template-columns:380px 1fr;
+  grid-template-columns:1fr;
   gap:0;
-  min-height:calc(100vh - 56px);
+  min-height:100vh;
   overflow:visible;
 }
 
-/* LEFT PANEL — Form */
+/* LEFT PANEL — Form - HIDDEN */
 .form-panel{
-  border-right:1px solid var(--border2);
-  overflow-y:visible;
-  padding:24px;
-  background:var(--bg2);
-  scrollbar-width:thin;
-  scrollbar-color:var(--border) transparent;
+  display:none !important;
 }
 .form-panel::-webkit-scrollbar{width:3px;}
 .form-panel::-webkit-scrollbar-track{background:transparent;}
@@ -221,10 +217,15 @@ body::after{
 /* RIGHT PANEL — Output */
 .output-panel{
   overflow-y:visible;
-  padding:24px;
+  padding:20px;
   background:var(--bg);
   scrollbar-width:thin;
   scrollbar-color:var(--border) transparent;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  width:100%;
 }
 .output-panel::-webkit-scrollbar{width:3px;}
 .output-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
@@ -350,12 +351,14 @@ select option{background:var(--bg3);}
   box-shadow:0 0 12px rgba(255,230,0,0.2);
 }
 
-/* ══════════════════════════
-   OUTPUT PANEL HEADER
-══════════════════════════ */
+/* OUTPUT PANEL HEADER - HIDDEN */
 .out-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:20px;
+  display:none !important;
+}
+
+/* STATS GRID - HIDDEN */
+.stats-grid{
+  display:none !important;
 }
 .out-title{
   font-family:'Orbitron',monospace;
@@ -523,6 +526,9 @@ select option{background:var(--bg3);}
   border:2px solid rgba(255,230,0,0.5);
   overflow:hidden;flex-shrink:0;
   box-shadow:0 0 12px rgba(255,230,0,0.3);
+  cursor:pointer;
+  transition:all 0.3s;
+  position:relative;
 }
 .ih-logo img{width:100%;height:100%;object-fit:cover;}
 .ih-name{
@@ -2024,6 +2030,29 @@ const GAMES = {
 
 let currentOID = "";
 let currentInvoiceData = null;
+let userProfilePic = null;
+
+// ═══════════════════════════════════════
+//  PROFILE PICTURE UPLOAD & DRAG DROP
+// ═══════════════════════════════════════
+function handleProfilePicUpload(file){
+  if(!file.type.startsWith('image/')){
+    showToast('❌ Please upload an image file');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e){
+    userProfilePic = e.target.result;
+    const logoImg = document.querySelector('.ih-logo img');
+    if(logoImg){
+      logoImg.src = userProfilePic;
+      logoImg.style.display = 'block';
+    }
+    showToast('✅ Profile picture uploaded!');
+  };
+  reader.readAsDataURL(file);
+}
 
 // Set today's date
 document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
@@ -2031,6 +2060,45 @@ document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
 // Enable TikTok mode by default on page load
 document.addEventListener('DOMContentLoaded', function(){
   document.body.classList.add('tiktok-mode');
+  
+  // Setup profile picture drag & drop
+  const logoContainer = document.querySelector('.ih-logo');
+  if(logoContainer){
+    logoContainer.style.cursor = 'pointer';
+    logoContainer.title = 'Click or drag to upload profile picture';
+    
+    logoContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      logoContainer.style.opacity = '0.7';
+      logoContainer.style.transform = 'scale(1.05)';
+    });
+    
+    logoContainer.addEventListener('dragleave', () => {
+      logoContainer.style.opacity = '1';
+      logoContainer.style.transform = 'scale(1)';
+    });
+    
+    logoContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      logoContainer.style.opacity = '1';
+      logoContainer.style.transform = 'scale(1)';
+      if(e.dataTransfer.files.length > 0){
+        handleProfilePicUpload(e.dataTransfer.files[0]);
+      }
+    });
+    
+    logoContainer.addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (e) => {
+        if(e.target.files.length > 0){
+          handleProfilePicUpload(e.target.files[0]);
+        }
+      };
+      input.click();
+    });
+  }
 });
 
 // Live clock
