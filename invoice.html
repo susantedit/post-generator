@@ -1797,6 +1797,16 @@ body.tiktok-mode .review-card{
       </div>
       
       <div class="field">
+        <span class="fl">👤 Customer Profile Picture</span>
+        <div id="customerProfileUploadBox" style="border:2px dashed rgba(255,230,0,0.3);padding:16px;border-radius:8px;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(255,230,0,0.05);">
+          <div style="font-size:28px;margin-bottom:6px;">📷</div>
+          <div style="font-size:10px;color:var(--text2);margin-bottom:3px;">Click or drag customer photo</div>
+          <div style="font-size:8px;color:var(--text3);">JPG, PNG (Max 5MB)</div>
+        </div>
+        <input type="file" id="customerProfilePicInput" accept="image/*" style="display:none;">
+      </div>
+      
+      <div class="field">
         <span class="fl">Star Rating</span>
         <select id="reviewRating">
           <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
@@ -2039,25 +2049,32 @@ const GAMES = {
 let currentOID = "";
 let currentInvoiceData = null;
 let userProfilePic = null;
+let customerProfilePic = null;
 
 // ═══════════════════════════════════════
-//  PROFILE PICTURE UPLOAD & DRAG DROP
+//  CUSTOMER PROFILE PICTURE UPLOAD
 // ═══════════════════════════════════════
-function handleProfilePicUpload(file){
+function handleCustomerProfileUpload(file){
   if(!file.type.startsWith('image/')){
     showToast('❌ Please upload an image file');
     return;
   }
   
+  if(file.size > 5 * 1024 * 1024){
+    showToast('❌ File too large (max 5MB)');
+    return;
+  }
+  
   const reader = new FileReader();
   reader.onload = function(e){
-    userProfilePic = e.target.result;
-    const logoImg = document.querySelector('.ih-logo img');
-    if(logoImg){
-      logoImg.src = userProfilePic;
-      logoImg.style.display = 'block';
-    }
-    showToast('✅ Profile picture uploaded!');
+    customerProfilePic = e.target.result;
+    
+    const uploadBox = document.getElementById('customerProfileUploadBox');
+    uploadBox.innerHTML = '<div style="font-size:20px;">✅ Photo Uploaded!</div>';
+    uploadBox.style.borderColor = 'rgba(0,255,136,0.5)';
+    uploadBox.style.background = 'rgba(0,255,136,0.05)';
+    
+    showToast('✅ Customer profile picture uploaded!');
   };
   reader.readAsDataURL(file);
 }
@@ -2069,42 +2086,47 @@ document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
 document.addEventListener('DOMContentLoaded', function(){
   document.body.classList.add('tiktok-mode');
   
-  // Setup profile picture drag & drop
-  const logoContainer = document.querySelector('.ih-logo');
-  if(logoContainer){
-    logoContainer.style.cursor = 'pointer';
-    logoContainer.title = 'Click or drag to upload profile picture';
-    
-    logoContainer.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      logoContainer.style.opacity = '0.7';
-      logoContainer.style.transform = 'scale(1.05)';
+  // Setup customer profile picture upload box
+  const customerUploadBox = document.getElementById('customerProfileUploadBox');
+  const customerFileInput = document.getElementById('customerProfilePicInput');
+  
+  if(customerUploadBox && customerFileInput){
+    // Click to upload
+    customerUploadBox.addEventListener('click', () => {
+      customerFileInput.click();
     });
     
-    logoContainer.addEventListener('dragleave', () => {
-      logoContainer.style.opacity = '1';
-      logoContainer.style.transform = 'scale(1)';
-    });
-    
-    logoContainer.addEventListener('drop', (e) => {
-      e.preventDefault();
-      logoContainer.style.opacity = '1';
-      logoContainer.style.transform = 'scale(1)';
-      if(e.dataTransfer.files.length > 0){
-        handleProfilePicUpload(e.dataTransfer.files[0]);
+    // File input change
+    customerFileInput.addEventListener('change', (e) => {
+      if(e.target.files.length > 0){
+        handleCustomerProfileUpload(e.target.files[0]);
       }
     });
     
-    logoContainer.addEventListener('click', () => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = (e) => {
-        if(e.target.files.length > 0){
-          handleProfilePicUpload(e.target.files[0]);
-        }
-      };
-      input.click();
+    // Drag over
+    customerUploadBox.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      customerUploadBox.style.borderColor = 'rgba(255,230,0,0.8)';
+      customerUploadBox.style.background = 'rgba(255,230,0,0.15)';
+      customerUploadBox.style.transform = 'scale(1.02)';
+    });
+    
+    // Drag leave
+    customerUploadBox.addEventListener('dragleave', () => {
+      customerUploadBox.style.borderColor = 'rgba(255,230,0,0.3)';
+      customerUploadBox.style.background = 'rgba(255,230,0,0.05)';
+      customerUploadBox.style.transform = 'scale(1)';
+    });
+    
+    // Drop
+    customerUploadBox.addEventListener('drop', (e) => {
+      e.preventDefault();
+      customerUploadBox.style.borderColor = 'rgba(255,230,0,0.3)';
+      customerUploadBox.style.background = 'rgba(255,230,0,0.05)';
+      customerUploadBox.style.transform = 'scale(1)';
+      if(e.dataTransfer.files.length > 0){
+        handleCustomerProfileUpload(e.dataTransfer.files[0]);
+      }
     });
   }
 });
@@ -2534,6 +2556,7 @@ function showCustomerReview(customerName, date){
   const reviewDate = document.getElementById('review-date');
   const reviewText = document.getElementById('review-text');
   const reviewStars = document.getElementById('review-stars');
+  const reviewAvatar = document.getElementById('review-avatar');
   
   // Get custom review inputs
   const customRating = document.getElementById('reviewRating').value;
@@ -2586,6 +2609,17 @@ function showCustomerReview(customerName, date){
   reviewDate.textContent = `Verified Purchase • ${date}`;
   reviewText.textContent = reviewMessage;
   reviewStars.textContent = stars;
+  
+  // Update avatar with customer profile picture if uploaded
+  if(customerProfilePic){
+    reviewAvatar.style.backgroundImage = `url('${customerProfilePic}')`;
+    reviewAvatar.style.backgroundSize = 'cover';
+    reviewAvatar.style.backgroundPosition = 'center';
+    reviewAvatar.textContent = '';
+  } else {
+    reviewAvatar.style.backgroundImage = 'none';
+    reviewAvatar.textContent = '👤';
+  }
   
   // Show review section
   reviewSection.style.display = 'block';
