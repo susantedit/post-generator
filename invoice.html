@@ -1070,6 +1070,12 @@ function downloadBill(){
 
     const clone = billArea.cloneNode(true);
 
+    // Remove problematic background images from clone
+    clone.querySelectorAll('*').forEach(el => {
+      el.style.backgroundImage = 'none';
+      el.style.background = 'transparent';
+    });
+
     const temp = document.createElement('div');
     temp.style.position = 'fixed';
     temp.style.left = '-9999px';
@@ -1095,7 +1101,8 @@ function downloadBill(){
         backgroundColor: '#0A0A0A',
         useCORS: true,
         logging: false,
-        allowTaint: true
+        allowTaint: true,
+        imageTimeout: 5000
       }).then(canvas => {
         console.log('Canvas created:', canvas.width, 'x', canvas.height);
         
@@ -1142,7 +1149,9 @@ function downloadBill(){
       }).catch(err => {
         console.error('Canvas error:', err);
         document.body.removeChild(temp);
-        showToast('❌ Capture failed: ' + err.message);
+        showToast('❌ Capture failed - retrying...');
+        // Retry once
+        setTimeout(() => doCapture(), 1000);
       });
 
     }, 300);
