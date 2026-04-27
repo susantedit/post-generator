@@ -7,1669 +7,270 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --y:#FFE600;
-  --y2:#FFC200;
-  --y3:#FFD700;
-  --yg:rgba(255,230,0,0.12);
-  --yg2:rgba(255,230,0,0.06);
-  --bg:#0A0A0A;
-  --bg2:#0F0F0F;
-  --bg3:#141414;
-  --bg4:#1A1A1A;
-  --panel:rgba(15,15,15,0.95);
-  --border:rgba(255,230,0,0.2);
-  --border2:rgba(255,230,0,0.08);
-  --text:#E8E8E8;
-  --text2:#AAAAAA;
-  --text3:#666;
-  --green:#00FF88;
-  --green2:#00CC6A;
-  --red:#FF3B3B;
-  --orange:#FF8C00;
-  --neon-line:rgba(255,230,0,0.6);
+  --y:#FFE600;--y2:#FFC200;--y3:#FFD700;
+  --yg:rgba(255,230,0,0.12);--yg2:rgba(255,230,0,0.06);
+  --bg:#0A0A0A;--bg2:#0F0F0F;--bg3:#141414;--bg4:#1A1A1A;
+  --border:rgba(255,230,0,0.2);--border2:rgba(255,230,0,0.08);
+  --text:#E8E8E8;--text2:#AAAAAA;--text3:#666;
+  --green:#00FF88;--red:#FF3B3B;--orange:#FF8C00;
 }
-
 html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,230,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,230,0,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Rajdhani',sans-serif;
-  min-height:100vh;
-  display:flex;
-  overflow-x:hidden;
-  overflow-y:auto;
-}
-
-/* ══════════════════════════
-   GRID BACKGROUND
-══════════════════════════ */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(255,230,0,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,230,0,0.03) 1px, transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;z-index:0;
-}
-
-/* Diagonal scan line */
-body::after{
-  content:'';
-  position:fixed;
-  top:-100%;left:-100%;
-  width:400%;height:400%;
-  background:repeating-linear-gradient(
-    -45deg,
-    transparent,transparent 2px,
-    rgba(255,230,0,0.01) 2px,
-    rgba(255,230,0,0.01) 4px
-  );
-  pointer-events:none;z-index:0;
-  animation:scanMove 20s linear infinite;
-}
-@keyframes scanMove{from{transform:translateX(0)}to{transform:translateX(80px)}}
-
-/* ══════════════════════════
-   LEFT SIDEBAR
-══════════════════════════ */
-.sidebar{
-  position:fixed;
-  left:0;top:0;bottom:0;
-  width:64px;
-  background:var(--bg2);
-  border-right:1px solid var(--border);
-  z-index:100;
-  display:flex;flex-direction:column;align-items:center;
-  padding:24px 0;
-  gap:8px;
-}
-.sidebar::after{
-  content:'';
-  position:absolute;right:0;top:0;bottom:0;width:1px;
-  background:linear-gradient(180deg,transparent,var(--y),var(--y),transparent);
-  opacity:0.4;
-}
-.sb-logo{
-  width:40px;height:40px;border-radius:50%;
-  border:2px solid var(--y);
-  overflow:hidden;margin-bottom:16px;
-  box-shadow:0 0 16px rgba(255,230,0,0.4);
-  flex-shrink:0;
-}
-.sb-logo img{width:100%;height:100%;object-fit:cover;}
-.sb-nav{
-  display:flex;flex-direction:column;gap:4px;width:100%;align-items:center;
-  flex:1;margin-top:8px;
-}
-.sb-item{
-  width:44px;height:44px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:4px;cursor:pointer;
-  transition:all 0.2s;
-  position:relative;
-  font-size:18px;
-  border:1px solid transparent;
-}
-.sb-item.active{
-  background:var(--yg);
-  border-color:var(--border);
-  color:var(--y);
-  box-shadow:0 0 12px rgba(255,230,0,0.2);
-}
-.sb-item.active::before{
-  content:'';
-  position:absolute;left:0;top:50%;transform:translateY(-50%);
-  width:3px;height:24px;
-  background:var(--y);
-  border-radius:0 2px 2px 0;
-  box-shadow:0 0 8px rgba(255,230,0,0.6);
-}
-.sb-item:not(.active){color:var(--text3);}
-.sb-item:hover:not(.active){background:var(--yg2);color:var(--text2);}
-.sb-bottom{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:8px;}
-.sb-status{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 8px var(--green);
-  animation:blink 2s ease-in-out infinite;
-}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
-
-/* ══════════════════════════
-   MAIN LAYOUT
-══════════════════════════ */
-.main{
-  margin-left:64px;
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  position:relative;z-index:1;
-  min-height:100vh;
-  overflow-y:auto;
-  overflow-x:hidden;
-}
-
-/* ══════════════════════════
-   TOP BAR
-══════════════════════════ */
-.topbar{
-  height:56px;
-  background:var(--bg2);
-  border-bottom:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 28px;
-  flex-shrink:0;
-  position:sticky;top:0;z-index:50;
-}
-.tb-left{display:flex;align-items:center;gap:16px;}
-.tb-title{
-  font-family:'Orbitron',monospace;
-  font-size:14px;font-weight:700;
-  letter-spacing:3px;color:var(--y);
-  text-shadow:0 0 12px rgba(255,230,0,0.5);
-}
-.tb-sep{color:var(--border);font-size:18px;font-weight:300;}
-.tb-sub{
-  font-size:11px;letter-spacing:2px;
-  color:var(--text3);text-transform:uppercase;
-  font-family:'Share Tech Mono',monospace;
-}
+/* ═══ TOPBAR ═══ */
+.topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;position:sticky;top:0;z-index:50;}
+.tb-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;letter-spacing:3px;color:var(--y);text-shadow:0 0 12px rgba(255,230,0,0.5);}
 .tb-right{display:flex;align-items:center;gap:12px;}
-.tb-badge{
-  background:var(--yg);border:1px solid var(--border);
-  padding:4px 10px;border-radius:2px;
-  font-family:'Share Tech Mono',monospace;
-  font-size:9px;letter-spacing:1px;color:var(--y);
-}
-.tb-time{
-  font-family:'Share Tech Mono',monospace;
-  font-size:10px;color:var(--text3);letter-spacing:1px;
-}
+.tb-badge{background:var(--yg);border:1px solid var(--border);padding:4px 10px;border-radius:2px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--y);}
+.tb-time{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:1px;}
 
-/* ══════════════════════════
-   CONTENT AREA
-══════════════════════════ */
-.content{
-  flex:1;
-  display:grid;
-  grid-template-columns:380px 1fr;
-  gap:0;
-  min-height:calc(100vh - 56px);
-  overflow:visible;
-}
+/* ═══ LAYOUT ═══ */
+.main{flex:1;display:flex;flex-direction:column;position:relative;z-index:1;}
+.content{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:calc(100vh - 52px);}
 
-/* LEFT PANEL — Form */
-.form-panel{
-  border-right:1px solid var(--border2);
-  overflow-y:visible;
-  padding:24px;
-  background:var(--bg2);
-  scrollbar-width:thin;
-  scrollbar-color:var(--border) transparent;
-}
+/* ═══ FORM PANEL ═══ */
+.form-panel{border-right:1px solid var(--border2);overflow-y:auto;padding:20px;background:var(--bg2);scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 .form-panel::-webkit-scrollbar{width:3px;}
-.form-panel::-webkit-scrollbar-track{background:transparent;}
 .form-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
-/* RIGHT PANEL — Output */
-.output-panel{
-  overflow-y:visible;
-  padding:24px;
-  background:var(--bg);
-  scrollbar-width:thin;
-  scrollbar-color:var(--border) transparent;
-}
-.output-panel::-webkit-scrollbar{width:3px;}
-.output-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-
-/* ══════════════════════════
-   FORM SECTIONS
-══════════════════════════ */
-.sec-head{
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:16px;margin-top:8px;
-}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:10px;}
 .sec-head:first-child{margin-top:0;}
-.sec-num{
-  font-family:'Orbitron',monospace;
-  font-size:10px;font-weight:700;
-  color:var(--y);letter-spacing:1px;
-  background:var(--yg);
-  border:1px solid var(--border);
-  padding:3px 7px;border-radius:2px;
-  text-shadow:0 0 8px rgba(255,230,0,0.4);
-}
-.sec-label{
-  font-size:9px;letter-spacing:3px;text-transform:uppercase;
-  color:var(--text3);font-weight:600;
-}
+.sec-num{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--y);letter-spacing:1px;background:var(--yg);border:1px solid var(--border);padding:3px 7px;border-radius:2px;}
+.sec-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);font-weight:600;}
 .sec-line{flex:1;height:1px;background:var(--border2);}
 
-.field{margin-bottom:14px;}
-.fl{
-  font-size:9px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--text3);font-weight:600;display:block;margin-bottom:6px;
-  font-family:'Share Tech Mono',monospace;
-}
-input,select{
-  width:100%;
-  background:var(--bg3);
-  border:1px solid rgba(255,230,0,0.12);
-  color:var(--text);
-  padding:10px 12px;
-  border-radius:2px;
-  font-family:'Rajdhani',sans-serif;
-  font-size:14px;font-weight:500;
-  transition:0.2s;
-  appearance:none;-webkit-appearance:none;
-}
-input:focus,select:focus{
-  outline:none;
-  border-color:rgba(255,230,0,0.5);
-  background:rgba(255,230,0,0.04);
-  box-shadow:0 0 0 1px rgba(255,230,0,0.15), 0 0 12px rgba(255,230,0,0.08);
-}
-input::placeholder{color:var(--text3);}
-
-/* Date input calendar icon styling */
-input[type="date"]{
-  position:relative;
-  cursor:pointer;
-}
-input[type="date"]::-webkit-calendar-picker-indicator{
-  cursor:pointer;
-  filter:invert(1) brightness(1.5) sepia(1) saturate(5) hue-rotate(10deg);
-  opacity:0.8;
-  transition:opacity 0.3s;
-}
-input[type="date"]::-webkit-calendar-picker-indicator:hover{
-  opacity:1;
-  filter:invert(1) brightness(2) sepia(1) saturate(5) hue-rotate(10deg);
-}
-input[type="date"]:focus::-webkit-calendar-picker-indicator{
-  filter:invert(1) brightness(2) sepia(1) saturate(5) hue-rotate(10deg);
-}
-
-select{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23FFE600'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;
-  padding-right:32px;cursor:pointer;
-}
+.field{margin-bottom:12px;}
+.fl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:600;display:block;margin-bottom:5px;font-family:'Share Tech Mono',monospace;}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid rgba(255,230,0,0.12);color:var(--text);padding:10px 12px;border-radius:2px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:500;transition:0.2s;appearance:none;-webkit-appearance:none;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(255,230,0,0.5);background:rgba(255,230,0,0.04);box-shadow:0 0 0 1px rgba(255,230,0,0.15);}
+input::placeholder,textarea::placeholder{color:var(--text3);}
+textarea{resize:vertical;min-height:80px;font-size:13px;}
+input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer;filter:invert(1) brightness(1.5) sepia(1) saturate(5) hue-rotate(10deg);opacity:0.8;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23FFE600'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer;}
 select option{background:var(--bg3);}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
-/* Generate Button */
-.gen-btn{
-  width:100%;
-  padding:14px;
-  background:var(--y);
-  border:none;color:#000;
-  font-family:'Orbitron',monospace;
-  font-size:10px;font-weight:700;letter-spacing:3px;
-  text-transform:uppercase;cursor:pointer;
-  border-radius:2px;
-  transition:all 0.2s;
-  position:relative;overflow:hidden;
-  margin-top:6px;
-  box-shadow:0 0 20px rgba(255,230,0,0.3);
-  clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
-}
-.gen-btn::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent 50%);
-  pointer-events:none;
-}
-.gen-btn:hover{
-  background:var(--y3);
-  box-shadow:0 0 30px rgba(255,230,0,0.6);
-  transform:translateY(-1px);
-}
+/* DRAG DROP ZONES */
+.drop-zone{border:2px dashed rgba(255,230,0,0.3);padding:14px;border-radius:4px;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(255,230,0,0.03);position:relative;}
+.drop-zone:hover,.drop-zone.drag-over{border-color:rgba(255,230,0,0.8);background:rgba(255,230,0,0.1);transform:scale(1.01);}
+.drop-zone.has-file{border-color:rgba(0,255,136,0.5);background:rgba(0,255,136,0.05);}
+.drop-zone-icon{font-size:24px;margin-bottom:4px;}
+.drop-zone-text{font-size:10px;color:var(--text2);letter-spacing:1px;}
+.drop-zone-sub{font-size:8px;color:var(--text3);margin-top:2px;}
+.drop-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.drop-zone-preview{max-width:100%;max-height:80px;border-radius:4px;margin-top:6px;object-fit:cover;display:none;}
+
+/* GENERATE BUTTON */
+.gen-btn{width:100%;padding:14px;background:var(--y);border:none;color:#000;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s;margin-top:8px;box-shadow:0 0 20px rgba(255,230,0,0.3);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);}
+.gen-btn:hover{background:var(--y3);box-shadow:0 0 30px rgba(255,230,0,0.6);transform:translateY(-1px);}
 .gen-btn:active{transform:scale(0.99);}
 
-.action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
-.sec-btn{
-  padding:10px;
-  background:transparent;
-  border:1px solid rgba(255,230,0,0.2);
-  color:var(--y);
-  font-family:'Rajdhani',sans-serif;
-  font-size:11px;font-weight:600;letter-spacing:2px;
-  text-transform:uppercase;cursor:pointer;
-  border-radius:2px;transition:all 0.2s;
-}
-.sec-btn:hover{
-  background:var(--yg);
-  border-color:rgba(255,230,0,0.5);
-  box-shadow:0 0 12px rgba(255,230,0,0.2);
-}
+.action-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px;}
+.sec-btn{padding:10px 6px;background:transparent;border:1px solid rgba(255,230,0,0.2);color:var(--y);font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.sec-btn:hover{background:var(--yg);border-color:rgba(255,230,0,0.5);}
 
-/* ══════════════════════════
-   OUTPUT PANEL HEADER
-══════════════════════════ */
-.out-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:20px;
-}
-.out-title{
-  font-family:'Orbitron',monospace;
-  font-size:11px;letter-spacing:2px;color:var(--y);
-  text-shadow:0 0 8px rgba(255,230,0,0.4);
-}
-.out-actions{display:flex;gap:8px;}
-.icon-btn{
-  width:32px;height:32px;
-  background:var(--bg3);
-  border:1px solid rgba(255,230,0,0.15);
-  color:var(--text2);font-size:13px;
-  cursor:pointer;border-radius:2px;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.2s;
-}
-.icon-btn:hover{
-  border-color:var(--border);color:var(--y);
-  box-shadow:0 0 8px rgba(255,230,0,0.2);
-}
+/* DISCOUNT DISPLAY */
+.disc-info{background:rgba(0,255,136,0.08);padding:10px 12px;border-radius:2px;border:1px solid rgba(0,255,136,0.2);display:none;margin-top:-8px;margin-bottom:10px;}
+.disc-info span{font-size:11px;color:var(--green);font-weight:600;letter-spacing:1px;}
 
-/* ══════════════════════════
-   STAT CARDS — Cyberpunk 2077 Style
-══════════════════════════ */
-.stats-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:20px;
-}
-.stat-card{
-  background:var(--bg2);
-  border:1px solid rgba(255,230,0,0.12);
-  padding:16px 18px;
-  position:relative;
-  overflow:hidden;
-  clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-  transition:all 0.3s;
-}
-.stat-card::before{
-  content:'';position:absolute;top:0;right:0;
-  width:0;height:0;
-  border-style:solid;
-  border-width:0 10px 10px 0;
-  border-color:transparent rgba(255,230,0,0.3) transparent transparent;
-}
-.stat-card::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--y),transparent);
-  opacity:0;transition:opacity 0.3s;
-}
-.stat-card:hover::after{opacity:1;}
-.stat-card:hover{
-  border-color:rgba(255,230,0,0.3);
-  background:rgba(255,230,0,0.03);
-}
-.stat-card.featured{
-  border-color:rgba(255,230,0,0.35);
-  background:rgba(255,230,0,0.05);
-  box-shadow:0 0 20px rgba(255,230,0,0.1),inset 0 0 20px rgba(255,230,0,0.03);
-}
-.stat-card.featured::after{opacity:1;}
-.sc-label{
-  font-size:8px;letter-spacing:3px;color:var(--text3);
-  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-  margin-bottom:8px;display:block;
-}
-.sc-value{
-  font-family:'Orbitron',monospace;
-  font-size:22px;font-weight:700;
-  color:var(--y);
-  text-shadow:0 0 16px rgba(255,230,0,0.5);
-  line-height:1;letter-spacing:-0.5px;
-}
-.stat-card.featured .sc-value{
-  font-size:26px;
-  text-shadow:0 0 20px rgba(255,230,0,0.7);
-}
-.sc-bar{
-  height:2px;background:rgba(255,230,0,0.1);
-  margin-top:10px;border-radius:1px;overflow:hidden;
-}
-.sc-fill{
-  height:100%;border-radius:1px;
-  background:linear-gradient(90deg,var(--y2),var(--y));
-  box-shadow:0 0 6px rgba(255,230,0,0.4);
-  transition:width 0.8s cubic-bezier(.22,.68,0,1.1);
-}
+/* ═══ OUTPUT PANEL ═══ */
+.output-panel{overflow-y:auto;padding:16px;background:var(--bg);display:flex;flex-direction:column;align-items:center;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.output-panel::-webkit-scrollbar{width:3px;}
+.output-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
-/* ══════════════════════════
-   THE INVOICE
-══════════════════════════ */
+/* THE INVOICE WRAPPER - forces 9:16 */
 #bill-outer{
-  position:relative;
-  max-width:420px;
-  margin:0 auto;
-}
-
-/* TikTok optimized aspect ratio helper */
-.tiktok-mode #bill-outer{
-  max-width:100%;
   width:100%;
-  aspect-ratio:9/16;
-  max-height:none;
+  max-width:450px;
+  position:relative;
 }
-
-/* Corner cut styling */
+/* This is the key: padding-bottom creates 9:16 aspect ratio */
+#bill-ratio-box{
+  width:100%;
+  padding-bottom:177.78%; /* 16/9 * 100 = 177.78% */
+  position:relative;
+}
+/* The actual invoice fills the ratio box absolutely */
 #bill-area{
+  position:absolute;
+  inset:0;
   background:var(--bg2);
   border:1px solid rgba(255,230,0,0.2);
-  position:relative;
   overflow:hidden;
-  clip-path:polygon(
-    0 0,
-    calc(100% - 20px) 0,
-    100% 20px,
-    100% 100%,
-    20px 100%,
-    0 calc(100% - 20px)
-  );
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+  display:flex;
+  flex-direction:column;
 }
-#bill-area::before{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--y),var(--y),transparent);
-  box-shadow:0 0 10px rgba(255,230,0,0.4);
-}
-
-/* FUI Corner Markers */
-#bill-area::after{
-  content:'';
-  position:absolute;
-  top:12px;
-  left:12px;
-  width:16px;
-  height:16px;
-  border-top:2px solid rgba(255,230,0,0.6);
-  border-left:2px solid rgba(255,230,0,0.6);
-  box-shadow:0 0 8px rgba(255,230,0,0.3);
-  pointer-events:none;
-}
+#bill-area::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--y),var(--y),transparent);box-shadow:0 0 10px rgba(255,230,0,0.4);z-index:1;}
 
 /* INVOICE HEADER */
-.inv-header{
-  background:var(--bg);
-  padding:20px 24px 18px;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(255,230,0,0.15);
-  position:relative;
-}
-.inv-header::after{
-  content:'';
-  position:absolute;
-  bottom:0;
-  left:50%;
-  right:0;
-  height:1px;
-  background:linear-gradient(90deg,rgba(255,230,0,0.6) 0%,rgba(255,230,0,0.3) 50%,rgba(255,230,0,0.6) 100%);
-  box-shadow:0 0 8px rgba(255,230,0,0.4);
-}
-.ih-brand{display:flex;align-items:center;gap:14px;}
-.ih-logo{
-  width:44px;height:44px;border-radius:50%;
-  border:2px solid rgba(255,230,0,0.5);
-  overflow:hidden;flex-shrink:0;
-  box-shadow:0 0 12px rgba(255,230,0,0.3);
-}
+.inv-header{background:var(--bg);padding:16px 20px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,230,0,0.15);flex-shrink:0;}
+.ih-brand{display:flex;align-items:center;gap:12px;}
+.ih-logo{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,230,0,0.5);overflow:hidden;flex-shrink:0;box-shadow:0 0 12px rgba(255,230,0,0.3);background:#111;}
 .ih-logo img{width:100%;height:100%;object-fit:cover;}
-.ih-name{
-  font-family:'Orbitron',monospace;
-  font-size:18px;font-weight:700;
-  color:var(--y);letter-spacing:3px;
-  text-shadow:0 0 16px rgba(255,230,0,0.5);
-  line-height:1;
-}
-.ih-sub{
-  font-size:8px;letter-spacing:3px;color:var(--text3);
-  text-transform:uppercase;margin-top:4px;
-  font-family:'Share Tech Mono',monospace;
-}
+.ih-name{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--y);letter-spacing:3px;text-shadow:0 0 16px rgba(255,230,0,0.5);line-height:1;}
+.ih-sub{font-size:7px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-top:3px;font-family:'Share Tech Mono',monospace;}
 .ih-right{text-align:right;}
-.inv-num-label{
-  font-size:7px;letter-spacing:3px;color:var(--text3);
-  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-  margin-bottom:4px;
-}
-.inv-num{
-  font-family:'Share Tech Mono',monospace;
-  font-size:13px;font-weight:700;color:var(--y);letter-spacing:2px;
-  background:rgba(255,230,0,0.08);
-  border:1px solid rgba(255,230,0,0.2);
-  padding:5px 10px;border-radius:2px;
-  display:inline-block;
-  text-shadow:0 0 8px rgba(255,230,0,0.3);
-}
+.inv-num-label{font-size:7px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;font-family:'Share Tech Mono',monospace;margin-bottom:3px;}
+.inv-num{font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:700;color:var(--y);letter-spacing:2px;background:rgba(255,230,0,0.08);border:1px solid rgba(255,230,0,0.2);padding:4px 8px;border-radius:2px;display:inline-block;}
 
 /* INVOICE BODY */
-.inv-body{
-  padding:20px 24px;
-  position:relative;
-}
+.inv-body{padding:10px 14px;flex:1;overflow:hidden;display:flex;flex-direction:column;gap:6px;}
 
-/* Serial number barcode effect */
-.inv-body::before{
-  content:'SE-2024-SECURE';
-  position:absolute;
-  right:8px;
-  top:50%;
-  transform:translateY(-50%) rotate(90deg);
-  font-family:'Share Tech Mono',monospace;
-  font-size:8px;
-  letter-spacing:3px;
-  color:rgba(255,230,0,0.15);
-  font-weight:700;
-  pointer-events:none;
-}
-.inv-body::after{
-  content:'';
-  position:absolute;
-  right:4px;
-  top:20%;
-  bottom:20%;
-  width:2px;
-  background:repeating-linear-gradient(
-    0deg,
-    rgba(255,230,0,0.2) 0px,
-    rgba(255,230,0,0.2) 3px,
-    transparent 3px,
-    transparent 6px
-  );
-  pointer-events:none;
-}
+/* Meta strip */
+.meta-strip{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,230,0,0.08);border:1px solid rgba(255,230,0,0.12);flex-shrink:0;}
+.meta-cell{background:var(--bg2);padding:8px 10px;}
+.mc-label{font-size:7px;letter-spacing:2px;color:rgba(200,210,255,0.35);text-transform:uppercase;font-family:'Share Tech Mono',monospace;margin-bottom:3px;}
+.mc-val{font-size:12px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-/* Meta row */
-.meta-strip{
-  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
-  gap:1px;
-  background:rgba(255,230,0,0.08);
-  border:1px solid rgba(255,230,0,0.12);
-  margin-bottom:16px;
-  overflow:hidden;
-  position:relative;
-}
+/* Provider */
+.provider-block{display:flex;align-items:center;gap:12px;background:rgba(255,230,0,0.04);border:1px solid rgba(255,230,0,0.15);padding:10px 12px;flex-shrink:0;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);}
+.prov-img{width:44px;height:44px;border-radius:4px;object-fit:cover;border:1px solid rgba(255,230,0,0.3);flex-shrink:0;}
+.prov-label{font-size:7px;letter-spacing:2px;color:var(--y);text-transform:uppercase;font-family:'Share Tech Mono',monospace;opacity:0.6;margin-bottom:2px;}
+.prov-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--text);line-height:1;}
 
-/* Corner markers for meta strip */
-.meta-strip::before,
-.meta-strip::after{
-  content:'';
-  position:absolute;
-  width:10px;
-  height:10px;
-  border:1.5px solid rgba(255,230,0,0.5);
-  z-index:1;
-}
-.meta-strip::before{
-  top:0;
-  right:0;
-  border-left:none;
-  border-bottom:none;
-}
-.meta-strip::after{
-  bottom:0;
-  left:0;
-  border-right:none;
-  border-top:none;
-}
-.meta-cell{
-  background:var(--bg2);
-  padding:12px 14px;
-}
-.mc-label{
-  font-size:9px;
-  letter-spacing:2px;
-  color:rgba(230,241,255,0.35);
-  text-transform:uppercase;
-  font-family:'Share Tech Mono',monospace;
-  margin-bottom:6px;
-  font-weight:500;
-}
-.mc-val{
-  font-size:15px;
-  font-weight:700;
-  color:var(--text);
-  letter-spacing:0.5px;
-  text-shadow:0 0 8px rgba(255,230,0,0.2);
-}
+/* Order */
+.order-block{display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid rgba(255,255,255,0.06);padding:8px 12px;flex-shrink:0;}
+.ob-label{font-size:7px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;font-family:'Share Tech Mono',monospace;}
+.ob-val{font-size:13px;font-weight:600;color:var(--text);margin-top:2px;}
 
-/* Service provider block */
-.provider-block{
-  display:flex;align-items:center;gap:16px;
-  background:rgba(255,230,0,0.04);
-  border:1px solid rgba(255,230,0,0.15);
-  padding:14px 16px;
-  margin-bottom:16px;
-  position:relative;
-  clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
-}
-.provider-block::before{
-  content:'▶';position:absolute;left:0;top:50%;transform:translateY(-50%);
-  color:var(--y);font-size:8px;left:4px;
-  text-shadow:0 0 8px rgba(255,230,0,0.6);
-}
-.prov-img{
-  width:52px;height:52px;border-radius:4px;
-  object-fit:cover;
-  border:1px solid rgba(255,230,0,0.3);
-  flex-shrink:0;
-  box-shadow:0 0 8px rgba(255,230,0,0.1);
-}
-.prov-label{
-  font-size:7px;letter-spacing:3px;color:var(--y);
-  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-  opacity:0.6;margin-bottom:4px;
-}
-.prov-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:26px;letter-spacing:3px;color:var(--text);
-  line-height:1;text-shadow:0 0 8px rgba(255,255,255,0.1);
-}
+/* Proof image */
+.proof-block{flex-shrink:0;border:1px solid rgba(255,230,0,0.3);padding:4px;background:var(--bg3);position:relative;margin-bottom:8px;}
+.proof-block::before{content:'PAYMENT PROOF';position:absolute;top:6px;left:6px;right:6px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:6px;letter-spacing:3px;color:rgba(255,230,0,0.4);pointer-events:none;z-index:1;}
+.proof-label{font-size:7px;letter-spacing:2px;color:rgba(255,230,0,0.6);text-transform:uppercase;font-family:'Share Tech Mono',monospace;margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+#proof-img{width:100%;height:auto;max-height:60px;object-fit:contain;border-radius:2px;display:block;background:#000;}
 
-/* Order desc */
-.order-block{
-  display:flex;align-items:center;justify-content:space-between;
-  background:var(--bg3);
-  border:1px solid rgba(255,255,255,0.06);
-  padding:10px 14px;
-  margin-bottom:16px;
-}
-.ob-label{
-  font-size:7px;letter-spacing:2px;color:var(--text3);
-  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-}
-.ob-val{
-  font-size:14px;font-weight:600;color:var(--text);
-}
-
-/* Price section */
-.price-block{
-  display:flex;
-  border:1px solid rgba(255,230,0,0.2);
-  overflow:hidden;
-  margin-bottom:14px;
-  clip-path:polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
-}
-.pb-main{
-  flex:1;padding:20px 20px;
-  background:linear-gradient(135deg,rgba(255,230,0,0.06) 0%,transparent 60%);
-}
-.pb-amount-label{
-  font-size:8px;letter-spacing:3px;color:var(--y);
-  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-  opacity:0.7;margin-bottom:6px;
-}
-.pb-amount{
-  display:flex;align-items:baseline;gap:6px;
-}
-.pb-cur{
-  font-family:'Orbitron',monospace;
-  font-size:14px;font-weight:700;color:var(--y);
-  text-shadow:0 0 10px rgba(255,230,0,0.4);
-}
-.pb-num{
-  font-family:'Orbitron',monospace;
-  font-size:42px;font-weight:900;color:var(--y);
-  text-shadow:0 0 20px rgba(255,230,0,0.5);
-  letter-spacing:-2px;line-height:1;
-}
-.pb-disc{
-  font-size:11px;
-  color:rgba(230,241,255,0.5);
-  margin-top:12px;
-  line-height:1.6;
-  font-family:'Share Tech Mono',monospace;
-  letter-spacing:0.5px;
-}
-.pb-status{
-  width:110px;flex-shrink:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:6px;padding:16px;
-  position:relative;
-}
+/* Price block */
+.price-block{display:flex;border:1px solid rgba(255,230,0,0.2);overflow:hidden;flex-shrink:0;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);}
+.pb-main{flex:1;padding:10px 14px;background:linear-gradient(135deg,rgba(255,230,0,0.06) 0%,transparent 60%);}
+.pb-amount-label{font-size:7px;letter-spacing:3px;color:var(--y);text-transform:uppercase;font-family:'Share Tech Mono',monospace;opacity:0.7;margin-bottom:2px;}
+.pb-amount{display:flex;align-items:baseline;gap:4px;}
+.pb-cur{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--y);}
+.pb-num{font-family:'Orbitron',monospace;font-size:34px;font-weight:900;color:var(--y);text-shadow:0 0 20px rgba(255,230,0,0.5);letter-spacing:-2px;line-height:1;}
+.pb-disc{font-size:9px;color:rgba(200,210,255,0.5);margin-top:4px;line-height:1.4;font-family:'Share Tech Mono',monospace;}
+.pb-status{width:84px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 8px;}
 .pb-status.paid{background:linear-gradient(135deg,rgba(0,255,136,0.15),rgba(0,204,106,0.08));}
 .pb-status.pending{background:linear-gradient(135deg,rgba(255,140,0,0.15),rgba(255,140,0,0.05));}
 .pb-status.failed{background:linear-gradient(135deg,rgba(255,59,59,0.15),rgba(255,59,59,0.05));}
-.pb-status-icon{
-  width:36px;height:36px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;
-}
-.pb-status.paid .pb-status-icon{background:rgba(0,255,136,0.2);box-shadow:0 0 16px rgba(0,255,136,0.4);}
-.pb-status.pending .pb-status-icon{background:rgba(255,140,0,0.2);box-shadow:0 0 16px rgba(255,140,0,0.4);}
-.pb-status.failed .pb-status-icon{background:rgba(255,59,59,0.2);box-shadow:0 0 16px rgba(255,59,59,0.4);}
-.pb-status-text{
-  font-family:'Orbitron',monospace;
-  font-size:10px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;text-align:center;
-}
+.pb-status-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.pb-status.paid .pb-status-icon{background:rgba(0,255,136,0.2);box-shadow:0 0 12px rgba(0,255,136,0.4);}
+.pb-status.pending .pb-status-icon{background:rgba(255,140,0,0.2);box-shadow:0 0 12px rgba(255,140,0,0.4);}
+.pb-status.failed .pb-status-icon{background:rgba(255,59,59,0.2);box-shadow:0 0 12px rgba(255,59,59,0.4);}
+.pb-status-text{font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center;}
 .pb-status.paid .pb-status-text{color:var(--green);}
 .pb-status.pending .pb-status-text{color:var(--orange);}
 .pb-status.failed .pb-status-text{color:var(--red);}
 
 /* Status bar */
-.status-confirm{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 14px;
-  border:1px solid;
-  margin-bottom:16px;
-  border-radius:0;
-}
-.status-confirm.paid{
-  border-color:rgba(0,255,136,0.25);
-  background:rgba(0,255,136,0.05);
-}
-.status-confirm.pending{
-  border-color:rgba(255,140,0,0.25);
-  background:rgba(255,140,0,0.05);
-}
-.status-confirm.failed{
-  border-color:rgba(255,59,59,0.25);
-  background:rgba(255,59,59,0.05);
-}
-.sc-dot{
-  width:8px;height:8px;border-radius:50%;flex-shrink:0;
-  animation:blink 2s ease-in-out infinite;
-}
-.status-confirm.paid .sc-dot{background:var(--green);box-shadow:0 0 8px var(--green);}
-.status-confirm.pending .sc-dot{background:var(--orange);box-shadow:0 0 8px var(--orange);}
-.status-confirm.failed .sc-dot{background:var(--red);box-shadow:0 0 8px var(--red);}
-.sc-msg{
-  font-size:10px;font-weight:600;letter-spacing:2px;
-  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-}
+.status-confirm{display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid;flex-shrink:0;}
+.status-confirm.paid{border-color:rgba(0,255,136,0.25);background:rgba(0,255,136,0.05);}
+.status-confirm.pending{border-color:rgba(255,140,0,0.25);background:rgba(255,140,0,0.05);}
+.status-confirm.failed{border-color:rgba(255,59,59,0.25);background:rgba(255,59,59,0.05);}
+.sc-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;animation:blink 2s ease-in-out infinite;}
+.status-confirm.paid .sc-dot{background:var(--green);box-shadow:0 0 5px var(--green);}
+.status-confirm.pending .sc-dot{background:var(--orange);box-shadow:0 0 5px var(--orange);}
+.status-confirm.failed .sc-dot{background:var(--red);box-shadow:0 0 5px var(--red);}
+.sc-msg{font-size:8px;font-weight:600;letter-spacing:2px;text-transform:uppercase;font-family:'Share Tech Mono',monospace;}
 .status-confirm.paid .sc-msg{color:var(--green);}
 .status-confirm.pending .sc-msg{color:var(--orange);}
 .status-confirm.failed .sc-msg{color:var(--red);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
 
-/* Proof */
-#proof-section{display:none;margin-bottom:14px;}
-.proof-wrap{
-  border:1px solid rgba(255,230,0,0.12);
-  padding:12px;background:var(--bg3);
-}
-.proof-label{
-  font-size:7px;letter-spacing:2px;color:var(--text3);
-  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-  margin-bottom:8px;
-}
-#proof-img{max-width:100%;height:auto;border-radius:2px;}
+/* Review section */
+.review-section{flex-shrink:0;border:1px solid rgba(255,230,0,0.15);background:rgba(255,230,0,0.03);padding:8px 10px;}
+.review-title{font-size:7px;letter-spacing:3px;color:var(--y);text-transform:uppercase;font-family:'Share Tech Mono',monospace;margin-bottom:6px;opacity:0.8;}
+.review-stars{font-size:14px;color:#FFD700;margin-bottom:4px;letter-spacing:2px;}
+.review-text{font-size:9px;line-height:1.45;color:var(--text);margin-bottom:6px;font-style:italic;}
+.review-author{display:flex;align-items:center;gap:6px;padding-top:5px;border-top:1px solid rgba(255,230,0,0.1);}
+.review-avatar{width:24px;height:24px;border-radius:50%;overflow:hidden;flex-shrink:0;background:rgba(255,230,0,0.1);border:1px solid rgba(255,230,0,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;}
+.review-avatar img{width:100%;height:100%;object-fit:cover;}
+.review-name{font-size:10px;font-weight:700;color:var(--y);margin-bottom:1px;}
+.review-date{font-size:7px;color:var(--green);background:rgba(0,255,136,0.08);padding:1px 5px;border-radius:2px;border:1px solid rgba(0,255,136,0.15);}
 
 /* INVOICE FOOTER */
-.inv-footer{
-  padding:12px 24px;
-  background:var(--bg);
-  border-top:1px solid rgba(255,230,0,0.12);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.if-id{
-  font-family:'Share Tech Mono',monospace;
-  font-size:9px;color:var(--text3);letter-spacing:2px;
-}
-.if-dots{display:flex;gap:5px;align-items:center;}
-.if-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:rgba(255,230,0,0.15);
-}
+.inv-footer{padding:10px 16px;background:var(--bg);border-top:1px solid rgba(255,230,0,0.12);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.if-id{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:2px;}
+.if-dots{display:flex;gap:4px;align-items:center;}
+.if-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,230,0,0.15);}
 .if-dot.active{background:var(--y);box-shadow:0 0 4px rgba(255,230,0,0.6);}
-.if-right{
-  font-size:9px;letter-spacing:2px;color:var(--text3);
-  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
-}
+.if-right{font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;font-family:'Share Tech Mono',monospace;}
 
-/* ══════════════════════════
-   CUSTOMER REVIEW SECTION
-══════════════════════════ */
-.review-section{
-  margin-top:24px;
-  padding-top:24px;
-  border-top:1px solid rgba(0,229,255,0.15);
-}
+/* DOWNLOAD STRIP */
+.dl-strip{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;width:100%;max-width:450px;}
+.dl-btn{padding:10px;background:transparent;border:1px solid rgba(255,230,0,0.15);color:var(--text2);font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.dl-btn:hover{border-color:rgba(255,230,0,0.4);color:var(--y);background:var(--yg2);}
 
-.review-header{
-  margin-bottom:16px;
-}
-
-.review-title{
-  font-size:10px;
-  letter-spacing:3px;
-  text-transform:uppercase;
-  color:var(--neon);
-  font-weight:700;
-  text-shadow:0 0 10px rgba(0,229,255,0.6);
-}
-
-.review-card{
-  background:rgba(0,229,255,0.05);
-  border:1px solid rgba(0,229,255,0.2);
-  border-radius:12px;
-  padding:24px;
-  backdrop-filter:blur(10px);
-  box-shadow:
-    0 0 15px rgba(0,229,255,0.1),
-    inset 0 0 10px rgba(0,229,255,0.05);
-  position:relative;
-}
-
-/* Corner markers for FUI effect */
-.review-card::before,
-.review-card::after{
-  content:'';
-  position:absolute;
-  width:12px;
-  height:12px;
-  border:2px solid rgba(0,229,255,0.4);
-}
-.review-card::before{
-  top:8px;
-  left:8px;
-  border-right:none;
-  border-bottom:none;
-}
-.review-card::after{
-  bottom:8px;
-  right:8px;
-  border-left:none;
-  border-top:none;
-}
-
-.review-stars{
-  font-size:22px;
-  color:#FFD700;
-  margin-bottom:12px;
-  text-shadow:0 0 12px rgba(255,215,0,0.8);
-  letter-spacing:3px;
-}
-
-.review-text{
-  font-size:13px;
-  line-height:1.6;
-  color:#FFFFFF;
-  margin-bottom:16px;
-  font-style:italic;
-  font-weight:500;
-  text-shadow:0 0 8px rgba(255,230,0,0.2);
-}
-
-.review-author{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding-top:12px;
-  border-top:1px solid rgba(0,229,255,0.1);
-}
-
-.review-avatar{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:linear-gradient(135deg,var(--neon),var(--neon2));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  flex-shrink:0;
-  box-shadow:0 0 15px rgba(0,229,255,0.4);
-}
-
-.review-info{
-  flex:1;
-}
-
-.review-name{
-  font-size:13px;
-  font-weight:700;
-  color:var(--y);
-  margin-bottom:4px;
-  text-shadow:0 0 10px rgba(255,230,0,0.6);
-  letter-spacing:0.5px;
-}
-
-.review-date{
-  font-size:10px;
-  color:var(--success);
-  letter-spacing:0.5px;
-  font-weight:600;
-  background:rgba(0,255,156,0.1);
-  padding:3px 8px;
-  border-radius:4px;
-  display:inline-block;
-  border:1px solid rgba(0,255,156,0.2);
-}
-
-/* ══════════════════════════
-   DOWNLOAD STRIP
-══════════════════════════ */
-.dl-strip{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:8px;margin-top:14px;
-}
-.dl-btn{
-  padding:10px;
-  background:transparent;
-  border:1px solid rgba(255,230,0,0.15);
-  color:var(--text2);
-  font-family:'Rajdhani',sans-serif;
-  font-size:10px;font-weight:600;letter-spacing:2px;
-  text-transform:uppercase;cursor:pointer;
-  border-radius:2px;transition:all 0.2s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.dl-btn:hover{
-  border-color:rgba(255,230,0,0.4);color:var(--y);
-  background:var(--yg2);
-  box-shadow:0 0 10px rgba(255,230,0,0.1);
-}
-
-/* ══════════════════════════
-   TOAST
-══════════════════════════ */
-.toast{
-  position:fixed;bottom:24px;left:50%;
-  transform:translateX(-50%) translateY(60px);
-  background:var(--bg3);
-  border:1px solid rgba(255,230,0,0.3);
-  color:var(--y);
-  font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-  padding:10px 20px;
-  font-family:'Share Tech Mono',monospace;
-  opacity:0;transition:all 0.3s cubic-bezier(.22,.68,0,1.2);
-  z-index:9999;white-space:nowrap;
-  box-shadow:0 0 20px rgba(255,230,0,0.2);
-  clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
-}
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--bg3);border:1px solid rgba(255,230,0,0.3);color:var(--y);font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 20px;font-family:'Share Tech Mono',monospace;opacity:0;transition:all 0.3s cubic-bezier(.22,.68,0,1.2);z-index:9999;white-space:nowrap;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
-/* ══════════════════════════
-   MODAL
-══════════════════════════ */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.85);
-  backdrop-filter:blur(8px);z-index:2000;
-  display:none;align-items:center;justify-content:center;padding:20px;
-}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.show{display:flex;}
-.modal{
-  background:var(--bg2);
-  border:1px solid rgba(255,230,0,0.2);
-  max-width:560px;width:100%;max-height:80vh;overflow-y:auto;
-  clip-path:polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
-}
-.modal-head{
-  background:var(--bg);
-  padding:16px 20px;
-  border-bottom:1px solid rgba(255,230,0,0.2);
-  display:flex;justify-content:space-between;align-items:center;
-}
-.modal-title{
-  font-family:'Orbitron',monospace;
-  font-size:13px;letter-spacing:2px;color:var(--y);
-}
-.modal-close{
-  background:transparent;border:1px solid rgba(255,230,0,0.2);
-  color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:16px;
-  transition:all 0.2s;border-radius:2px;
-}
+.modal{background:var(--bg2);border:1px solid rgba(255,230,0,0.2);max-width:540px;width:100%;max-height:80vh;overflow-y:auto;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,0 100%);}
+.modal-head{background:var(--bg);padding:14px 18px;border-bottom:1px solid rgba(255,230,0,0.2);display:flex;justify-content:space-between;align-items:center;}
+.modal-title{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;color:var(--y);}
+.modal-close{background:transparent;border:1px solid rgba(255,230,0,0.2);color:var(--text2);width:26px;height:26px;cursor:pointer;font-size:16px;transition:all 0.2s;border-radius:2px;}
 .modal-close:hover{border-color:var(--border);color:var(--y);}
-.modal-body{padding:16px 20px;}
-.hist-item{
-  background:var(--bg3);border:1px solid rgba(255,230,0,0.08);
-  padding:12px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;
-}
+.modal-body{padding:14px 18px;}
+.hist-item{background:var(--bg3);border:1px solid rgba(255,230,0,0.08);padding:10px;margin-bottom:6px;cursor:pointer;transition:all 0.2s;}
 .hist-item:hover{border-color:rgba(255,230,0,0.25);background:rgba(255,230,0,0.03);}
-.hi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.hi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
 .hi-oid{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--y);}
-.hi-badge{font-size:7px;padding:3px 8px;letter-spacing:1px;font-weight:700;border-radius:1px;}
+.hi-badge{font-size:7px;padding:2px 7px;letter-spacing:1px;font-weight:700;border-radius:1px;}
 .hi-badge.paid{background:rgba(0,255,136,0.1);color:var(--green);border:1px solid rgba(0,255,136,0.2);}
 .hi-badge.pending{background:rgba(255,140,0,0.1);color:var(--orange);border:1px solid rgba(255,140,0,0.2);}
 .hi-badge.failed{background:rgba(255,59,59,0.1);color:var(--red);border:1px solid rgba(255,59,59,0.2);}
-.hi-info{font-size:11px;color:var(--text2);margin-bottom:4px;}
-.hi-price{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--text);}
-.empty-state{text-align:center;padding:32px;color:var(--text3);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;}
+.hi-info{font-size:11px;color:var(--text2);margin-bottom:2px;}
+.hi-price{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--text);}
+.empty-state{text-align:center;padding:28px;color:var(--text3);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;}
+.del-btn{float:right;background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.2);color:var(--red);padding:2px 8px;font-size:8px;cursor:pointer;border-radius:2px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;transition:all 0.2s;}
+.del-btn:hover{background:rgba(255,59,59,0.2);}
 
-/* reveal animation */
 .reveal{animation:revUp 0.4s cubic-bezier(.22,.68,0,1.1) both;}
 @keyframes revUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
+/* WATERMARK TOGGLE */
+.wm-toggle{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border:1px solid rgba(255,230,0,0.1);border-radius:2px;cursor:pointer;margin-bottom:10px;}
+.wm-toggle input{width:auto;padding:0;}
+.wm-label{font-size:10px;color:var(--text2);letter-spacing:1px;font-family:'Share Tech Mono',monospace;}
+.wm-label span{color:var(--y);}
+
+/* WATERMARK ON INVOICE */
+.inv-watermark{position:absolute;bottom:60px;right:16px;font-family:'Orbitron',monospace;font-size:8px;font-weight:700;color:rgba(255,230,0,0.15);letter-spacing:4px;transform:rotate(90deg);transform-origin:right bottom;text-transform:uppercase;pointer-events:none;z-index:5;}
+
+/* RESPONSIVE */
 @media(max-width:860px){
-  .content{
-    grid-template-columns:1fr;
-    min-height:auto;
-    overflow:visible;
-  }
-  .output-panel{max-height:none;overflow:visible;}
-  .form-panel{max-height:none;overflow:visible;}
-  .sidebar{display:none;}
-  .main{margin-left:0;}
-  
-  /* Topbar adjustments */
-  .topbar{padding:0 16px;}
+  .content{grid-template-columns:1fr;display:block;}
+  .form-panel{max-height:none;}
+  .output-panel{padding:12px;}
+  #bill-outer{max-width:360px;}
+  .dl-strip{max-width:360px;}
+}
+@media(max-width:480px){
+  .topbar{padding:0 14px;}
   .tb-title{font-size:12px;letter-spacing:2px;}
-  .tb-sub{display:none;}
-  .tb-sep{display:none;}
-  .tb-badge{font-size:8px;padding:3px 8px;}
-  .tb-time{font-size:9px;}
-  
-  /* Stats grid to single column on tablet */
-  .stats-grid{grid-template-columns:1fr 1fr;}
-}
-
-/* ═══════════════════════════════════════
-   MOBILE RESPONSIVE
-═══════════════════════════════════════ */
-@media(max-width:640px){
-  /* Topbar */
-  .topbar{
-    height:48px;
-    padding:0 12px;
-  }
-  .tb-title{font-size:11px;letter-spacing:2px;}
-  .tb-badge{font-size:7px;padding:2px 6px;}
-  .tb-time{font-size:8px;}
-  
-  /* Content area - force single column */
-  .content{
-    grid-template-columns:1fr !important;
-    display:block !important;
-  }
-  
-  /* Sidebar hidden on mobile */
-  .sidebar{display:none !important;}
-  .main{margin-left:0 !important;padding:0;}
-  
-  /* Form panel */
-  .form-panel{
-    padding:16px;
-    max-height:none;
-    border-right:none;
-  }
-  
-  /* Output panel */
-  .output-panel{
-    padding:16px;
-    max-height:none;
-  }
-  
-  /* Section headers */
-  .sec-head{margin-bottom:12px;}
-  .sec-num{font-size:9px;padding:2px 6px;}
-  .sec-label{font-size:8px;letter-spacing:2px;}
-  
-  /* Fields */
-  .field{margin-bottom:14px;}
-  .fl{font-size:9px;margin-bottom:5px;}
-  .field input,.field select,.field textarea{
-    font-size:16px !important;
-    padding:11px 12px;
-  }
-  
-  /* Grid 2 columns */
+  .form-panel{padding:14px;}
   .grid2{gap:8px;}
-  
-  /* Discount display */
-  #discount-display div{
-    padding:10px 12px;
-    font-size:10px;
-  }
-  
-  /* Generate button */
-  .gen-btn{
-    padding:14px;
-    font-size:10px;
-    letter-spacing:2px;
-    margin-top:16px;
-  }
-  
-  /* Action row */
-  .action-row{
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-top:10px;
-  }
-  .sec-btn{
-    padding:12px 10px;
-    font-size:9px;
-    letter-spacing:1px;
-  }
-  
-  /* Output header */
-  .out-header{margin-bottom:16px;}
-  .out-title{font-size:10px;}
-  .icon-btn{width:28px;height:28px;font-size:12px;}
-  
-  /* Stats grid - 2 columns on mobile */
-  .stats-grid{
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-bottom:16px;
-  }
-  .stat-card{padding:12px;}
-  .sc-label{font-size:7px;letter-spacing:2px;}
-  .sc-value{font-size:18px;}
-  .stat-card.featured .sc-value{font-size:20px;}
-  
-  /* Invoice */
-  #bill-outer{
-    margin-top:16px;
-    max-width:100%;
-  }
-  #bill-area{
-    clip-path:polygon(
-      0 0,
-      calc(100% - 12px) 0,
-      100% 12px,
-      100% 100%,
-      12px 100%,
-      0 calc(100% - 12px)
-    );
-  }
-  
-  /* Invoice header */
-  .inv-header{
-    padding:14px 16px;
-    flex-direction:column;
-    gap:10px;
-    text-align:center;
-  }
-  .ih-brand{
-    flex-direction:column;
-    gap:8px;
-  }
-  .ih-logo{width:38px;height:38px;}
-  .ih-name{font-size:16px;letter-spacing:2px;}
-  .ih-sub{font-size:7px;margin-top:3px;}
-  .ih-right{text-align:center;}
-  .inv-num-label{font-size:7px;}
-  .inv-num{font-size:11px;padding:4px 8px;}
-  
-  /* Invoice body */
-  .inv-body{padding:14px 16px;}
-  .inv-body::before{font-size:6px;right:5px;}
-  .inv-body::after{right:2px;width:1.5px;}
-  
-  /* Meta strip - 2 columns */
-  .meta-strip{
-    grid-template-columns:1fr 1fr;
-    gap:1px;
-    margin-bottom:12px;
-  }
-  .meta-cell{padding:10px 12px;}
-  .mc-label{font-size:8px;letter-spacing:1px;}
-  .mc-val{font-size:13px;}
-  
-  /* Provider block */
-  .provider-block{
-    gap:12px;
-    padding:12px 14px;
-    margin-bottom:12px;
-  }
-  .prov-img{width:48px;height:48px;}
-  .prov-label{font-size:7px;}
-  .prov-name{font-size:20px;letter-spacing:2px;}
-  
-  /* Order block */
-  .order-block{
-    padding:10px 14px;
-    margin-bottom:12px;
-  }
-  .ob-label{font-size:7px;}
-  .ob-val{font-size:13px;}
-  
-  /* Price block */
-  .price-block{
-    flex-direction:column;
-    margin-bottom:12px;
-  }
-  .pb-main{padding:18px 16px;}
-  .pb-amount-label{font-size:8px;}
-  .pb-num{font-size:38px;}
-  .pb-cur{font-size:16px;}
-  .pb-disc{font-size:10px;margin-top:8px;}
-  
-  .pb-status{
-    width:100%;
-    padding:14px;
-    flex-direction:row;
-    gap:10px;
-    justify-content:center;
-  }
-  .pb-status-icon{width:28px;height:28px;font-size:14px;}
-  .pb-status-text{font-size:12px;}
-  
-  /* Status confirm */
-  .status-confirm{
-    padding:10px 14px;
-    margin-bottom:12px;
-  }
-  .sc-msg{font-size:9px;}
-  
-  /* Review section */
-  .review-section{margin-top:14px;padding-top:14px;}
-  .review-title{font-size:9px;}
-  .review-card{padding:14px;border-radius:8px;}
-  .review-card::before,
-  .review-card::after{width:10px;height:10px;}
-  .review-stars{font-size:18px;margin-bottom:10px;letter-spacing:2px;}
-  .review-text{font-size:12px;margin-bottom:12px;line-height:1.5;}
-  .review-author{gap:10px;padding-top:10px;}
-  .review-avatar{width:32px;height:32px;font-size:14px;}
-  .review-name{font-size:12px;}
-  .review-date{font-size:8px;padding:2px 6px;}
-  
-  /* Invoice footer */
-  .inv-footer{
-    padding:10px 16px;
-    flex-direction:column;
-    gap:6px;
-    text-align:center;
-  }
-  .if-id{font-size:8px;}
-  .if-right{font-size:7px;}
-  .if-dots{gap:3px;}
-  .if-dot{width:3px;height:3px;}
-  
-  /* Download strip */
-  .dl-strip{
-    grid-template-columns:1fr;
-    gap:8px;
-    margin-top:12px;
-  }
-  .dl-btn{
-    padding:12px;
-    font-size:9px;
-    letter-spacing:1px;
-  }
-  
-  /* Modal */
-  .modal{
-    max-width:95%;
-    margin:0 10px;
-  }
-  .modal-head{padding:12px 16px;}
-  .modal-title{font-size:12px;}
-  .modal-close{width:26px;height:26px;font-size:14px;}
-  .modal-body{padding:14px 16px;}
-  .hist-item{padding:10px;margin-bottom:8px;}
-  .hi-oid{font-size:10px;}
-  .hi-badge{font-size:7px;padding:2px 6px;}
-  .hi-info{font-size:10px;}
-  .hi-price{font-size:13px;}
-  
-  /* Toast */
-  .toast{
-    font-size:9px;
-    padding:10px 16px;
-    bottom:16px;
-    max-width:90%;
-  }
-  
-  /* FUI corner markers smaller */
-  #bill-area::after{
-    top:8px;
-    left:8px;
-    width:12px;
-    height:12px;
-  }
-  .meta-strip::before,
-  .meta-strip::after{
-    width:8px;
-    height:8px;
-  }
-}
-
-/* Extra small devices */
-@media(max-width:400px){
-  .page{padding:20px 10px 30px;}
-  .form-panel{padding:12px;}
-  .fp-head{padding:10px 12px;}
-  .fp-title{font-size:13px;}
-  
-  .field input,.field select,.field textarea{
-    font-size:16px !important;
-    padding:10px 12px;
-  }
-  
-  .gen-btn{padding:14px;font-size:10px;}
-  
-  .stat-card{padding:12px;}
-  .sc-value{font-size:18px;}
-  .stat-card.featured .sc-value{font-size:22px;}
-  
-  .inv-body{padding:14px;}
-  .meta-cell{padding:10px;}
-  .mc-val{font-size:12px;}
-  
-  .pb-amount{font-size:32px;}
-  .pb-cur{font-size:14px;}
-  
-  .review-card{padding:14px;}
-  .review-text{font-size:11px;}
-}
-
-/* ═══════════════════════════════════════
-   TIKTOK MODE (9:16 ASPECT RATIO)
-   Only applies when checkbox is checked
-═══════════════════════════════════════ */
-
-/* TikTok container optimization */
-body.tiktok-mode #bill-outer{
-  max-width:420px;
-  width:100%;
-  margin:0 auto;
-}
-
-body.tiktok-mode #bill-area{
-  max-width:100%;
-  width:100%;
-  min-height:auto;
-  max-height:none;
-  overflow:visible;
-  display:flex;
-  flex-direction:column;
-}
-
-/* Optimize header for TikTok */
-body.tiktok-mode .inv-header{
-  padding:18px 20px;
-  flex-shrink:0;
-}
-
-body.tiktok-mode .ih-logo{
-  width:52px;
-  height:52px;
-}
-
-body.tiktok-mode .ih-name{
-  font-size:22px;
-  letter-spacing:4px;
-}
-
-body.tiktok-mode .ih-sub{
-  font-size:9px;
-  margin-top:5px;
-}
-
-body.tiktok-mode .inv-num{
-  font-size:14px;
-  padding:6px 12px;
-}
-
-/* Body with proper spacing */
-body.tiktok-mode .inv-body{
-  padding:16px 20px 100px 20px; /* Extra bottom padding for safe zone */
-  flex:1;
-}
-
-/* Meta strip - 2 columns for better fit */
-body.tiktok-mode .meta-strip{
-  grid-template-columns:1fr 1fr;
-  margin-bottom:14px;
-}
-
-body.tiktok-mode .meta-cell{
-  padding:14px 16px;
-}
-
-body.tiktok-mode .mc-label{
-  font-size:9px;
-  letter-spacing:2px;
-}
-
-body.tiktok-mode .mc-val{
-  font-size:15px;
-}
-
-/* Provider block */
-body.tiktok-mode .provider-block{
-  padding:16px 18px;
-  margin-bottom:14px;
-}
-
-body.tiktok-mode .prov-img{
-  width:58px;
-  height:58px;
-}
-
-body.tiktok-mode .prov-name{
-  font-size:24px;
-  letter-spacing:3px;
-}
-
-body.tiktok-mode .prov-label{
-  font-size:8px;
-}
-
-/* Order block */
-body.tiktok-mode .order-block{
-  padding:12px 16px;
-  margin-bottom:14px;
-}
-
-body.tiktok-mode .ob-val{
-  font-size:15px;
-}
-
-/* Price block - larger for impact */
-body.tiktok-mode .price-block{
-  margin-bottom:14px;
-}
-
-body.tiktok-mode .pb-main{
-  padding:22px 20px;
-}
-
-body.tiktok-mode .pb-amount-label{
-  font-size:9px;
-  margin-bottom:8px;
-}
-
-body.tiktok-mode .pb-num{
-  font-size:52px;
-  letter-spacing:-2px;
-}
-
-body.tiktok-mode .pb-cur{
-  font-size:22px;
-}
-
-body.tiktok-mode .pb-disc{
-  font-size:12px;
-  margin-top:10px;
-}
-
-body.tiktok-mode .pb-status{
-  padding:20px;
-}
-
-body.tiktok-mode .pb-status-icon{
-  width:40px;
-  height:40px;
-  font-size:20px;
-}
-
-body.tiktok-mode .pb-status-text{
-  font-size:16px;
-  letter-spacing:2px;
-}
-
-/* Status bar */
-body.tiktok-mode .status-confirm{
-  padding:12px 16px;
-  margin-bottom:14px;
-}
-
-body.tiktok-mode .sc-msg{
-  font-size:11px;
-}
-
-/* Review section */
-body.tiktok-mode .review-section{
-  margin-top:18px;
-  padding-top:18px;
-  margin-bottom:20px; /* Keep review above safe zone */
-}
-
-body.tiktok-mode .review-title{
-  font-size:10px;
-  margin-bottom:12px;
-}
-
-body.tiktok-mode .review-card{
-  padding:20px;
-  border-radius:10px;
-}
-
-body.tiktok-mode .review-stars{
-  font-size:26px;
-  margin-bottom:12px;
-  letter-spacing:4px;
-}
-
-body.tiktok-mode .review-text{
-  font-size:15px;
-  line-height:1.7;
-  margin-bottom:14px;
-}
-
-body.tiktok-mode .review-author{
-  padding-top:12px;
-}
-
-body.tiktok-mode .review-avatar{
-  width:42px;
-  height:42px;
-  font-size:20px;
-}
-
-body.tiktok-mode .review-name{
-  font-size:15px;
-  margin-bottom:5px;
-}
-
-body.tiktok-mode .review-date{
-  font-size:10px;
-  padding:4px 8px;
-}
-
-/* Footer */
-body.tiktok-mode .inv-footer{
-  padding:14px 20px;
-  flex-shrink:0;
-}
-
-body.tiktok-mode .if-id{
-  font-size:10px;
-}
-
-body.tiktok-mode .if-right{
-  font-size:9px;
-}
-
-/* TikTok safe zones indicator - only visible in editor, hidden during download */
-body.tiktok-mode #bill-area::before{
-  content:'';
-  position:absolute;
-  top:0;
-  right:0;
-  width:70px;
-  height:100%;
-  background:linear-gradient(90deg, transparent, rgba(255,0,0,0.05));
-  pointer-events:none;
-  z-index:1000;
-  border-left:1px dashed rgba(255,0,0,0.2);
-}
-
-body.tiktok-mode #bill-area::after{
-  content:'SAFE ZONE';
-  position:absolute;
-  bottom:80px;
-  left:0;
-  right:0;
-  height:2px;
-  background:rgba(255,0,0,0.2);
-  pointer-events:none;
-  z-index:1000;
-  font-size:8px;
-  color:rgba(255,0,0,0.5);
-  text-align:center;
-  line-height:2px;
-}
-
-/* Hide safe zone indicators during download */
-body.tiktok-mode.downloading #bill-area::before,
-body.tiktok-mode.downloading #bill-area::after{
-  display:none !important;
-}
-
-/* Ensure content doesn't overflow into right safe zone */
-body.tiktok-mode .meta-cell,
-body.tiktok-mode .provider-block,
-body.tiktok-mode .order-block,
-body.tiktok-mode .price-block,
-body.tiktok-mode .status-confirm,
-body.tiktok-mode .review-card{
-  margin-right:10px; /* Keep away from right safe zone */
-}
-
-/* Mobile TikTok adjustments */
-@media(max-width:640px){
-  body.tiktok-mode #bill-area{
-    min-height:auto;
-  }
-  
-  body.tiktok-mode .pb-num{
-    font-size:44px;
-  }
-  
-  body.tiktok-mode .review-stars{
-    font-size:22px;
-  }
-  
-  body.tiktok-mode .review-text{
-    font-size:13px;
-  }
+  #bill-outer{max-width:100%;}
+  .dl-strip{max-width:100%;}
+  .action-row{grid-template-columns:1fr 1fr;gap:6px;}
+  .sec-btn:last-child{grid-column:1/-1;}
 }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<nav class="sidebar">
-  <div class="sb-logo">
-    <img src="logo.png" alt="SE"
-         onerror="this.parentElement.style.background='#00E5FF';this.style.display='none'">
-  </div>
-  <div class="sb-nav">
-    <div class="sb-item active" title="Invoice">📋</div>
-    <div class="sb-item" title="History">🗂</div>
-    <div class="sb-item" title="Analytics">📊</div>
-    <div class="sb-item" title="Settings">⚙</div>
-  </div>
-  <div class="sb-bottom">
-    <div class="sb-status"></div>
-  </div>
-</nav>
-
-<!-- MAIN -->
 <div class="main">
-
-  <!-- TOP BAR -->
   <header class="topbar">
-    <div class="tb-left">
+    <div style="display:flex;align-items:center;gap:12px;">
       <div class="tb-title">SUSANTEDIT</div>
-      <div class="tb-sep">/</div>
-      <div class="tb-sub">Invoice Terminal</div>
+      <div style="color:rgba(255,230,0,0.3);font-size:16px;">|</div>
+      <div style="font-size:10px;letter-spacing:2px;color:var(--text3);font-family:'Share Tech Mono',monospace;">INVOICE TERMINAL</div>
     </div>
     <div class="tb-right">
       <div class="tb-badge">NEPAL 🇳🇵</div>
@@ -1677,10 +278,9 @@ body.tiktok-mode .review-card{
     </div>
   </header>
 
-  <!-- CONTENT -->
   <div class="content">
 
-    <!-- LEFT: FORM -->
+    <!-- FORM PANEL -->
     <div class="form-panel">
 
       <div class="sec-head">
@@ -1718,6 +318,10 @@ body.tiktok-mode .review-card{
           <option value="IOS">IOS FLUORITE</option>
           <option value="PH">PRIME HOOK</option>
           <option value="PT">PATO TEAM</option>
+          <option value="DM">DIAMOND</option>
+          <option value="WL">WEEKLY LITE</option>
+          <option value="WK">WEEKLY</option>
+          <option value="MN">MONTHLY</option>
           <option value="OTHER">Special Service</option>
         </select>
       </div>
@@ -1731,17 +335,15 @@ body.tiktok-mode .review-card{
           <input type="number" id="price" placeholder="0" min="0" oninput="calculateDiscount()">
         </div>
         <div class="field">
-          <span class="fl">Discount Amount (NPR)</span>
+          <span class="fl">Discount (NPR)</span>
           <input type="number" id="discount" placeholder="0" min="0" oninput="calculateDiscount()">
         </div>
       </div>
-      <div class="field" id="discount-display" style="display:none;margin-top:-10px;">
-        <div style="background:rgba(0,229,255,0.1);padding:12px 16px;border-radius:8px;border:1px solid rgba(0,229,255,0.2);">
-          <span style="font-size:11px;color:var(--neon);font-weight:600;letter-spacing:1px;">
-            💰 Discount: <span id="discount-percent-display">0</span>% • Final Price: NPR <span id="final-price-display">0</span>
-          </span>
-        </div>
+
+      <div class="disc-info" id="disc-info">
+        <span>💰 Discount: <span id="disc-pct">0</span>% &nbsp;|&nbsp; Final: NPR <span id="disc-final">0</span></span>
       </div>
+
       <div class="grid2">
         <div class="field">
           <span class="fl">Transaction Date</span>
@@ -1756,236 +358,225 @@ body.tiktok-mode .review-card{
           </select>
         </div>
       </div>
-      <div class="field">
-        <span class="fl">Payment Proof (Optional)</span>
-        <input type="file" id="paymentProof" accept="image/*" style="padding:8px 12px;cursor:pointer;">
-      </div>
-      
-      <div class="section-tag" style="margin-top:20px;">
-        <span class="num">03</span>
-        <div class="line"></div>
-        <span class="label">Customer Review (Optional)</span>
-      </div>
-      
-      <div class="field">
-        <span class="fl">Star Rating</span>
-        <select id="reviewRating">
-          <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
-          <option value="4">⭐⭐⭐⭐☆ (4 Stars)</option>
-          <option value="3">⭐⭐⭐☆☆ (3 Stars)</option>
-          <option value="2">⭐⭐☆☆☆ (2 Stars)</option>
-          <option value="1">⭐☆☆☆☆ (1 Star)</option>
-        </select>
-      </div>
-      
-      <div class="field">
-        <span class="fl">Review Message</span>
-        <textarea id="reviewMessage" placeholder="Write a custom review message (optional)..." style="width:100%;background:var(--card);border:1px solid rgba(0,229,255,0.2);color:var(--text);padding:14px;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:14px;min-height:100px;resize:vertical;transition:0.3s;" onfocus="this.style.borderColor='var(--neon)';this.style.boxShadow='0 0 12px rgba(0,229,255,0.5)'" onblur="this.style.borderColor='rgba(0,229,255,0.2)';this.style.boxShadow='none'"></textarea>
+
+      <div class="sec-head" style="margin-top:16px;">
+        <span class="sec-num">03</span>
+        <span class="sec-label">Payment Proof</span>
+        <div class="sec-line"></div>
       </div>
 
-      <div class="field" style="margin-top:10px;">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);">
-          <input type="checkbox" id="tiktokMode" onchange="toggleTikTokMode()" checked style="width:auto;cursor:pointer;">
-          <span>📱 TikTok Mode (9:16 Ratio) - DEFAULT</span>
-        </label>
-        <div style="margin-top:6px;padding:8px 12px;background:rgba(255,230,0,0.05);border:1px solid rgba(255,230,0,0.1);border-radius:4px;">
-          <p style="font-size:9px;color:var(--text3);line-height:1.5;margin:0;">
-            ℹ️ Portrait 9:16 mode enabled by default. Red zones show button/description areas. Safe zones are hidden in download.
-          </p>
+      <div class="field">
+        <span class="fl">Payment Screenshot (Drag & Drop / Click)</span>
+        <div class="drop-zone" id="proofDropZone">
+          <div class="drop-zone-icon">📎</div>
+          <div class="drop-zone-text">Drop screenshot here or click to browse</div>
+          <div class="drop-zone-sub">JPG, PNG, WEBP · Max 10MB</div>
+          <input type="file" id="paymentProof" accept="image/*">
+          <img class="drop-zone-preview" id="proofPreview" alt="">
         </div>
       </div>
 
-      <div class="field" style="margin-top:10px;">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);">
-          <input type="checkbox" id="forceMobile" onchange="toggleForceMobile()" style="width:auto;cursor:pointer;">
-          <span>🔧 Force Mobile View (Testing)</span>
-        </label>
+      <div class="sec-head" style="margin-top:4px;">
+        <span class="sec-num">04</span>
+        <span class="sec-label">Customer Review</span>
+        <div class="sec-line"></div>
+      </div>
+
+      <div class="field">
+        <span class="fl">Customer Profile Photo (Drag & Drop / Click)</span>
+        <div class="drop-zone" id="customerDropZone">
+          <div class="drop-zone-icon">👤</div>
+          <div class="drop-zone-text">Drop profile photo or click to browse</div>
+          <div class="drop-zone-sub">JPG, PNG · Max 5MB</div>
+          <input type="file" id="customerPhoto" accept="image/*">
+          <img class="drop-zone-preview" id="customerPreview" alt="">
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <span class="fl">Star Rating</span>
+          <select id="reviewRating">
+            <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+            <option value="4">⭐⭐⭐⭐☆ (4 Stars)</option>
+            <option value="3">⭐⭐⭐☆☆ (3 Stars)</option>
+            <option value="2">⭐⭐☆☆☆ (2 Stars)</option>
+            <option value="1">⭐☆☆☆☆ (1 Star)</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="fl">Show Review?</span>
+          <select id="showReview">
+            <option value="yes">✓ Show Review</option>
+            <option value="no">✗ Hide Review</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="fl">Review Message</span>
+        <textarea id="reviewMessage" placeholder="Customer review text (leave blank for auto-generated)..."></textarea>
+      </div>
+
+      <!-- EXTRA OPTIONS -->
+      <div class="sec-head" style="margin-top:4px;">
+        <span class="sec-num">05</span>
+        <span class="sec-label">Options</span>
+        <div class="sec-line"></div>
+      </div>
+
+      <label class="wm-toggle">
+        <input type="checkbox" id="showWatermark" checked>
+        <span class="wm-label">Show <span>SUSANTEDIT</span> watermark on invoice</span>
+      </label>
+
+      <div class="field">
+        <span class="fl">Custom Footer Text (Optional)</span>
+        <input type="text" id="footerText" placeholder="e.g. Thank you for your order!">
       </div>
 
       <button class="gen-btn" onclick="generateBill()">
         ◈ &nbsp; GENERATE INVOICE
       </button>
       <div class="action-row">
-        <button class="sec-btn" onclick="downloadBill()">⬇ Download PNG</button>
+        <button class="sec-btn" onclick="downloadBill()">⬇ Download</button>
+        <button class="sec-btn" onclick="copyOID()">⎘ Copy ID</button>
         <button class="sec-btn" onclick="viewHistory()">⬜ History</button>
       </div>
 
     </div><!-- /form-panel -->
 
-    <!-- RIGHT: OUTPUT -->
+    <!-- OUTPUT PANEL -->
     <div class="output-panel">
 
-      <div class="out-header">
-        <div class="out-title">⚡ INVOICE OUTPUT</div>
-        <div class="out-actions">
-          <button class="icon-btn" onclick="downloadBill()" title="Download">⬇</button>
-          <button class="icon-btn" onclick="copyOID()" title="Copy ID">⎘</button>
-        </div>
-      </div>
-
-      <!-- STATS GRID -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <span class="sc-label">Total Value</span>
-          <div class="sc-value" id="stat-total">NPR 0</div>
-          <div class="sc-bar"><div class="sc-fill" id="bar-total" style="width:0%"></div></div>
-        </div>
-        <div class="stat-card">
-          <span class="sc-label">Revenue Est.</span>
-          <div class="sc-value" id="stat-revenue">NPR 0</div>
-          <div class="sc-bar"><div class="sc-fill" id="bar-revenue" style="width:0%"></div></div>
-        </div>
-        <div class="stat-card">
-          <span class="sc-label">Balance</span>
-          <div class="sc-value" id="stat-balance">NPR 0</div>
-          <div class="sc-bar"><div class="sc-fill" id="bar-balance" style="width:0%"></div></div>
-        </div>
-        <div class="stat-card featured">
-          <span class="sc-label">Service Price</span>
-          <div class="sc-value" id="stat-price">NPR 0</div>
-          <div class="sc-bar"><div class="sc-fill" id="bar-price" style="width:0%"></div></div>
-        </div>
-      </div>
-
-      <!-- INVOICE -->
+      <!-- THE INVOICE in 9:16 ratio -->
       <div id="bill-outer">
-        <div id="bill-area">
+        <div id="bill-ratio-box">
+          <div id="bill-area">
 
-          <!-- Header -->
-          <div class="inv-header">
-            <div class="ih-brand">
-              <div class="ih-logo">
-                <img src="logo.png" alt="SE"
-                     onerror="this.parentElement.style.background='#00E5FF';this.style.display='none'">
-              </div>
-              <div>
-                <div class="ih-name">SUSANTEDIT</div>
-                <div class="ih-sub">Trusted Reseller · Nepal · Est. 2024</div>
-              </div>
-            </div>
-            <div class="ih-right">
-              <div class="inv-num-label">Invoice Number</div>
-              <div class="inv-num" id="res-oid">—</div>
-            </div>
-          </div>
+            <!-- Watermark -->
+            <div class="inv-watermark" id="inv-watermark">SUSANTEDIT · VERIFIED</div>
 
-          <!-- Body -->
-          <div class="inv-body">
-
-            <!-- Meta strip -->
-            <div class="meta-strip">
-              <div class="meta-cell">
-                <div class="mc-label">Billed To</div>
-                <div class="mc-val" id="res-name">—</div>
-              </div>
-              <div class="meta-cell">
-                <div class="mc-label">TikTok</div>
-                <div class="mc-val" id="res-tt">—</div>
-              </div>
-              <div class="meta-cell">
-                <div class="mc-label">Contact</div>
-                <div class="mc-val" id="res-phone">—</div>
-              </div>
-              <div class="meta-cell">
-                <div class="mc-label">Date Issued</div>
-                <div class="mc-val" id="res-date">—</div>
-              </div>
-            </div>
-
-            <!-- Provider -->
-            <div class="provider-block">
-              <img src="" id="res-game-img" class="prov-img" alt="Provider">
-              <div class="prov-info">
-                <div class="prov-label">Service Provider</div>
-                <div class="prov-name" id="res-game-name">—</div>
-              </div>
-            </div>
-
-            <!-- Order description -->
-            <div class="order-block">
-              <div>
-                <div class="ob-label">Order Description</div>
-                <div class="ob-val" id="res-detail">—</div>
-              </div>
-            </div>
-
-            <!-- Payment proof -->
-            <div id="proof-section">
-              <div class="proof-wrap">
-                <div class="proof-label">Payment Proof</div>
-                <img id="proof-img" alt="Payment Proof">
-              </div>
-            </div>
-
-            <!-- Price block -->
-            <div class="price-block">
-              <div class="pb-main">
-                <div class="pb-amount-label" id="price-label">Amount Due</div>
-                <div class="pb-amount">
-                  <span class="pb-cur">NPR</span>
-                  <span class="pb-num" id="res-price">0</span>
+            <!-- Header -->
+            <div class="inv-header">
+              <div class="ih-brand">
+                <div class="ih-logo">
+                  <img src="logo.png" alt="SE" onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111;color:#FFE600;font-family:Orbitron,monospace;font-size:12px;font-weight:900;\'>SE</div>'">
                 </div>
-                <div class="pb-disc" id="discount-info" style="display:none">
-                  Original: NPR <span id="original-price">0</span> · Discount: <span id="discount-pct">0</span>%
+                <div>
+                  <div class="ih-name">SUSANTEDIT</div>
+                  <div class="ih-sub">Trusted Reseller · Nepal · Est. 2024</div>
                 </div>
               </div>
-              <div class="pb-status paid" id="status-badge">
-                <div class="pb-status-icon" id="status-icon">✓</div>
-                <div class="pb-status-text" id="status-text">PAID</div>
+              <div class="ih-right">
+                <div class="inv-num-label">Invoice No.</div>
+                <div class="inv-num" id="res-oid">—</div>
               </div>
             </div>
 
-            <!-- Status confirm bar -->
-            <div class="status-confirm paid" id="status-bar">
-              <div class="sc-dot"></div>
-              <div class="sc-msg" id="status-msg">Payment Received &amp; Confirmed</div>
-            </div>
+            <!-- Body -->
+            <div class="inv-body">
 
-            <!-- Customer Review Section -->
-            <div class="review-section" id="review-section" style="display:none;">
-              <div class="review-header">
-                <span class="review-title">⭐ CUSTOMER REVIEW</span>
+              <div class="meta-strip">
+                <div class="meta-cell">
+                  <div class="mc-label">Billed To</div>
+                  <div class="mc-val" id="res-name">—</div>
+                </div>
+                <div class="meta-cell">
+                  <div class="mc-label">TikTok</div>
+                  <div class="mc-val" id="res-tt">—</div>
+                </div>
+                <div class="meta-cell">
+                  <div class="mc-label">Contact</div>
+                  <div class="mc-val" id="res-phone">—</div>
+                </div>
+                <div class="meta-cell">
+                  <div class="mc-label">Date</div>
+                  <div class="mc-val" id="res-date">—</div>
+                </div>
               </div>
-              <div class="review-card">
-                <div class="review-stars" id="review-stars">
-                  ★★★★★
+
+              <div class="provider-block">
+                <img src="" id="res-game-img" class="prov-img" alt="">
+                <div>
+                  <div class="prov-label">Service Provider</div>
+                  <div class="prov-name" id="res-game-name">—</div>
                 </div>
-                <div class="review-text" id="review-text">
-                  Excellent service! Fast delivery and great support. Highly recommended!
+              </div>
+
+              <div class="order-block">
+                <div>
+                  <div class="ob-label">Order Description</div>
+                  <div class="ob-val" id="res-detail">—</div>
                 </div>
+              </div>
+
+              <div id="proof-section" style="display:none;">
+                <div class="proof-block">
+                  <div class="proof-label">📎 Payment Proof &nbsp;<span style="color:rgba(0,255,136,0.7);font-size:6px;">● VERIFIED</span></div>
+                  <img id="proof-img" alt="Payment Proof">
+                </div>
+              </div>
+
+              <div class="price-block">
+                <div class="pb-main">
+                  <div class="pb-amount-label" id="price-label">Amount Paid</div>
+                  <div class="pb-amount">
+                    <span class="pb-cur">NPR</span>
+                    <span class="pb-num" id="res-price">0</span>
+                  </div>
+                  <div class="pb-disc" id="discount-info" style="display:none;">
+                    Original: NPR <span id="original-price">0</span> &nbsp;·&nbsp; Saved: <span id="discount-pct">0</span>%
+                  </div>
+                </div>
+                <div class="pb-status paid" id="status-badge">
+                  <div class="pb-status-icon" id="status-icon">✓</div>
+                  <div class="pb-status-text" id="status-text">PAID</div>
+                </div>
+              </div>
+
+              <div class="status-confirm paid" id="status-bar">
+                <div class="sc-dot"></div>
+                <div class="sc-msg" id="status-msg">Payment Received &amp; Confirmed</div>
+              </div>
+
+              <!-- Review -->
+              <div class="review-section" id="review-section" style="display:none;">
+                <div class="review-title">⭐ CUSTOMER REVIEW</div>
+                <div class="review-stars" id="review-stars">★★★★★</div>
+                <div class="review-text" id="review-text">Excellent service! Fast delivery. Highly recommended!</div>
                 <div class="review-author">
                   <div class="review-avatar" id="review-avatar">👤</div>
-                  <div class="review-info">
-                    <div class="review-name" id="review-name">Customer Name</div>
-                    <div class="review-date" id="review-date">Verified Purchase</div>
+                  <div>
+                    <div class="review-name" id="review-author-name">Customer</div>
+                    <div class="review-date" id="review-date-tag">Verified Purchase</div>
                   </div>
                 </div>
               </div>
+
+            </div><!-- /inv-body -->
+
+            <!-- Footer -->
+            <div class="inv-footer">
+              <div class="if-id" id="foot-oid">SE-000000</div>
+              <div class="if-dots">
+                <div class="if-dot active"></div>
+                <div class="if-dot"></div>
+                <div class="if-dot"></div>
+                <div class="if-dot active"></div>
+                <div class="if-dot"></div>
+              </div>
+              <div class="if-right" id="footer-custom">susantedit · nepal 🇳🇵</div>
             </div>
 
-          </div><!-- /inv-body -->
-
-          <!-- Footer -->
-          <div class="inv-footer">
-            <div class="if-id" id="foot-oid">SE-000000</div>
-            <div class="if-dots">
-              <div class="if-dot active"></div>
-              <div class="if-dot"></div>
-              <div class="if-dot"></div>
-              <div class="if-dot active"></div>
-              <div class="if-dot"></div>
-            </div>
-            <div class="if-right">susantedit · nepal 🇳🇵</div>
-          </div>
-
-        </div><!-- /bill-area -->
+          </div><!-- /bill-area -->
+        </div><!-- /bill-ratio-box -->
       </div><!-- /bill-outer -->
 
-      <!-- Download strip -->
       <div class="dl-strip">
         <button class="dl-btn" onclick="downloadBill()">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v7M3 6l3 4 3-4M1 11h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-          Download PNG (2K)
+          Download 9:16 PNG
         </button>
         <button class="dl-btn" onclick="copyOID()">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 3V2a1 1 0 011-1h5a1 1 0 011 1v6a1 1 0 01-1 1h-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
@@ -2014,186 +605,145 @@ body.tiktok-mode .review-card{
 <div class="toast" id="toast"></div>
 
 <script>
-const LOGO = "logo.png";
+// ═══════════════════════════════════════
+//  CONSTANTS & STATE
+// ═══════════════════════════════════════
 const GAMES = {
-  DC:   { name:"DRIP CLINT",    img:"https://i.postimg.cc/Jnwh1T2q/Screenshot-20260421-102516.jpg" },
-  HG:   { name:"HG CHEATS",     img:"https://i.postimg.cc/fRGsXVfy/Screenshot-20260421-102611.jpg" },
-  IOS:  { name:"IOS FLUORITE",  img:"https://i.postimg.cc/R07kHX0k/fluorite-ios-ff-og-1765886845.webp" },
-  PH:   { name:"PRIME HOOK",    img:"https://i.postimg.cc/x8ChBQPd/IMG-20260421-102934-585.jpg" },
-  PT:   { name:"PATO TEAM",     img:"https://i.postimg.cc/RV2ypjJM/Screenshot-20260421-102813.jpg" },
-  OTHER:{ name:"SPECIAL SERVICE",img:"logo.png" }
+  DC:   { name:"DRIP CLINT",     img:"https://i.postimg.cc/Jnwh1T2q/Screenshot-20260421-102516.jpg" },
+  HG:   { name:"HG CHEATS",      img:"https://i.postimg.cc/fRGsXVfy/Screenshot-20260421-102611.jpg" },
+  IOS:  { name:"IOS FLUORITE",   img:"https://i.postimg.cc/R07kHX0k/fluorite-ios-ff-og-1765886845.webp" },
+  PH:   { name:"PRIME HOOK",     img:"https://i.postimg.cc/x8ChBQPd/IMG-20260421-102934-585.jpg" },
+  PT:   { name:"PATO TEAM",      img:"https://i.postimg.cc/RV2ypjJM/Screenshot-20260421-102813.jpg" },
+  DM:   { name:"DIAMOND",        img:"diamond.webp" },
+  WL:   { name:"WEEKLY LITE",    img:"weeklylite.webp" },
+  WK:   { name:"WEEKLY",         img:"weekly.webp" },
+  MN:   { name:"MONTHLY",        img:"monthly.webp" },
+  OTHER:{ name:"SPECIAL SERVICE",img:"" }
 };
 
 let currentOID = "";
-let currentInvoiceData = null;
+let proofDataURL = null;
+let customerPhotoDataURL = null;
 
-// Set today's date
-document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
-
-// Enable TikTok mode by default
-document.addEventListener('DOMContentLoaded', function(){
-  const tiktokCheckbox = document.getElementById('tiktokMode');
-  if(tiktokCheckbox){
-    tiktokCheckbox.checked = true;
-    toggleTikTokMode();
-  }
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
+  setupDropZone('proofDropZone', 'paymentProof', 'proofPreview', (data) => { proofDataURL = data; }, 10);
+  setupDropZone('customerDropZone', 'customerPhoto', 'customerPreview', (data) => { customerPhotoDataURL = data; }, 5);
+  generateBill(); // Show default invoice immediately
 });
 
 // ═══════════════════════════════════════
-//  TIKTOK MODE TOGGLE
+//  DRAG & DROP ZONES
 // ═══════════════════════════════════════
-function toggleTikTokMode(){
-  const isEnabled = document.getElementById('tiktokMode').checked;
-  const body = document.body;
-  const billOuter = document.getElementById('bill-outer');
-  
-  if(isEnabled){
-    body.classList.add('tiktok-mode');
-    showToast('📱 TikTok Mode Enabled (9:16) • Safe zones visible');
-    
-    // Scroll to invoice for better view
-    setTimeout(() => {
-      billOuter.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
-  } else {
-    body.classList.remove('tiktok-mode');
-    showToast('💻 Normal Mode Restored');
+function setupDropZone(zoneId, inputId, previewId, onLoad, maxMB) {
+  const zone = document.getElementById(zoneId);
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+
+  // Click
+  zone.addEventListener('click', (e) => {
+    if(e.target !== input) input.click();
+  });
+
+  // File input change
+  input.addEventListener('change', (e) => {
+    if(e.target.files[0]) handleFile(e.target.files[0]);
+  });
+
+  // Drag events
+  zone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if(file) handleFile(file);
+  });
+
+  function handleFile(file) {
+    if(!file.type.startsWith('image/')) { showToast('❌ Image files only'); return; }
+    if(file.size > maxMB * 1024 * 1024) { showToast(`❌ Max ${maxMB}MB allowed`); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = e.target.result;
+      onLoad(data);
+      preview.src = data;
+      preview.style.display = 'block';
+      zone.classList.add('has-file');
+      zone.querySelector('.drop-zone-icon').textContent = '✅';
+      zone.querySelector('.drop-zone-text').textContent = file.name;
+      showToast('✅ File uploaded');
+    };
+    reader.readAsDataURL(file);
   }
 }
 
 // ═══════════════════════════════════════
-//  FORCE MOBILE VIEW (Testing)
+//  CLOCK
 // ═══════════════════════════════════════
-function toggleForceMobile(){
-  const isEnabled = document.getElementById('forceMobile').checked;
-  const html = document.documentElement;
-  
-  if(isEnabled){
-    html.style.zoom = '0.5';
-    showToast('📱 Mobile View Forced (50% zoom)');
-  } else {
-    html.style.zoom = '1';
-    showToast('💻 Normal Zoom Restored');
-  }
-}
-
-// Live clock
 function updateClock(){
-  const now = new Date();
   document.getElementById('live-time').textContent =
-    now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 setInterval(updateClock, 1000); updateClock();
 
 // ═══════════════════════════════════════
-//  AUTO-CALCULATE DISCOUNT PERCENTAGE
+//  DISCOUNT CALC
 // ═══════════════════════════════════════
 function calculateDiscount(){
   const price = parseFloat(document.getElementById('price').value) || 0;
-  const discountAmount = parseFloat(document.getElementById('discount').value) || 0;
-  
-  if(price > 0 && discountAmount > 0){
-    const discountPercent = ((discountAmount / price) * 100).toFixed(2);
-    const finalPrice = price - discountAmount;
-    
-    document.getElementById('discount-percent-display').textContent = discountPercent;
-    document.getElementById('final-price-display').textContent = finalPrice.toLocaleString('en-IN');
-    document.getElementById('discount-display').style.display = 'block';
+  const disc  = parseFloat(document.getElementById('discount').value) || 0;
+  const info  = document.getElementById('disc-info');
+  if(price > 0 && disc > 0){
+    document.getElementById('disc-pct').textContent   = ((disc/price)*100).toFixed(1);
+    document.getElementById('disc-final').textContent = (price-disc).toLocaleString('en-IN');
+    info.style.display = 'block';
   } else {
-    document.getElementById('discount-display').style.display = 'none';
+    info.style.display = 'none';
   }
 }
 
+// ═══════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════
 function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2400);
 }
-
 function formatDate(val){
-  if(!val) return '—';
-  const d = new Date(val+'T00:00:00');
-  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  if(!val) return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  return new Date(val+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 }
-
 function generateID(){
-  const y = new Date().getFullYear();
-  const ts = Date.now().toString().slice(-6);
-  return `SE-${y}-${ts}`;
+  return `SE-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
 }
 
-function animateNum(id, end, prefix='NPR '){
-  const el = document.getElementById(id);
-  const dur = 900, fps = 60, steps = Math.ceil(dur/(1000/fps));
-  let step = 0;
-  const inc = end / steps;
-  const timer = setInterval(()=>{
-    step++;
-    const val = Math.min(step*inc, end);
-    el.textContent = prefix + Math.floor(val).toLocaleString('en-IN');
-    if(step >= steps) clearInterval(timer);
-  }, 1000/fps);
-}
-
-function updateStats(price){
-  animateNum('stat-total',   price * 10);
-  animateNum('stat-revenue', price * 5);
-  animateNum('stat-balance', price * 2);
-  animateNum('stat-price',   price);
-
-  const max = price * 10;
-  setTimeout(()=>{
-    document.getElementById('bar-total').style.width   = '75%';
-    document.getElementById('bar-revenue').style.width = '55%';
-    document.getElementById('bar-balance').style.width = '40%';
-    document.getElementById('bar-price').style.width   = '88%';
-  }, 100);
-}
-
-function applyStatus(status){
-  const badge   = document.getElementById('status-badge');
-  const icon    = document.getElementById('status-icon');
-  const text    = document.getElementById('status-text');
-  const bar     = document.getElementById('status-bar');
-  const msg     = document.getElementById('status-msg');
-  const plabel  = document.getElementById('price-label');
-
-  badge.className = 'pb-status ' + status.toLowerCase();
-  bar.className   = 'status-confirm ' + status.toLowerCase();
-  text.textContent = status;
-
-  if(status === 'PAID'){
-    icon.innerHTML = '✓';
-    msg.textContent = 'Payment Received & Confirmed';
-    plabel.textContent = 'Amount Paid';
-  } else if(status === 'PENDING'){
-    icon.innerHTML = '⏳';
-    msg.textContent = 'Payment Pending Confirmation';
-    plabel.textContent = 'Amount Due';
-  } else {
-    icon.innerHTML = '✕';
-    msg.textContent = 'Payment Failed or Declined';
-    plabel.textContent = 'Amount Due';
-  }
-}
-
+// ═══════════════════════════════════════
+//  GENERATE INVOICE
+// ═══════════════════════════════════════
 function generateBill(){
-  const key     = document.getElementById('gameSelect').value;
-  const oid     = generateID();
-  currentOID    = oid;
-  const name    = document.getElementById('cName').value.trim() || '—';
-  const tt      = document.getElementById('cTikTok').value.trim() || '—';
-  const phone   = document.getElementById('cPhone').value.trim() || '—';
-  const date    = formatDate(document.getElementById('bDate').value);
-  const detail  = document.getElementById('orderInfo').value.trim() || '—';
-  const raw     = parseFloat(document.getElementById('price').value) || 0;
-  const disc    = parseFloat(document.getElementById('discount').value) || 0;
-  const status  = document.getElementById('paymentStatus').value;
-  
-  // Calculate final price (disc is amount, not percentage)
-  const final   = raw - disc;
-  const discPct = raw > 0 ? ((disc / raw) * 100).toFixed(2) : 0;
+  const key    = document.getElementById('gameSelect').value;
+  const oid    = generateID();
+  currentOID   = oid;
+  const name   = document.getElementById('cName').value.trim() || '—';
+  const tt     = document.getElementById('cTikTok').value.trim() || '—';
+  const phone  = document.getElementById('cPhone').value.trim() || '—';
+  const date   = formatDate(document.getElementById('bDate').value);
+  const detail = document.getElementById('orderInfo').value.trim() || '—';
+  const raw    = parseFloat(document.getElementById('price').value) || 0;
+  const disc   = parseFloat(document.getElementById('discount').value) || 0;
+  const status = document.getElementById('paymentStatus').value;
+  const final  = raw - disc;
+  const discPct= raw > 0 ? ((disc/raw)*100).toFixed(1) : 0;
 
+  // Fill invoice fields
   document.getElementById('res-oid').textContent      = oid;
   document.getElementById('foot-oid').textContent     = oid;
   document.getElementById('res-name').textContent     = name;
@@ -2202,9 +752,14 @@ function generateBill(){
   document.getElementById('res-date').textContent     = date;
   document.getElementById('res-detail').textContent   = detail;
   document.getElementById('res-price').textContent    = final.toLocaleString('en-IN');
-  document.getElementById('res-game-img').src         = GAMES[key].img;
-  document.getElementById('res-game-name').textContent= GAMES[key].name;
 
+  // Game image - use inline base64 conversion for CORS
+  const gameImg = document.getElementById('res-game-img');
+  gameImg.crossOrigin = 'anonymous';
+  gameImg.src = GAMES[key].img || '';
+  document.getElementById('res-game-name').textContent = GAMES[key].name;
+
+  // Discount display
   if(disc > 0){
     document.getElementById('discount-info').style.display = 'block';
     document.getElementById('original-price').textContent  = raw.toLocaleString('en-IN');
@@ -2213,36 +768,37 @@ function generateBill(){
     document.getElementById('discount-info').style.display = 'none';
   }
 
+  // Status
   applyStatus(status);
 
   // Payment proof
-  const proofFile = document.getElementById('paymentProof').files[0];
-  if(proofFile){
-    const reader = new FileReader();
-    reader.onload = e => {
-      document.getElementById('proof-img').src = e.target.result;
-      document.getElementById('proof-section').style.display = 'block';
-    };
-    reader.readAsDataURL(proofFile);
+  if(proofDataURL){
+    document.getElementById('proof-img').src = proofDataURL;
+    document.getElementById('proof-section').style.display = 'block';
   } else {
     document.getElementById('proof-section').style.display = 'none';
   }
 
-  currentInvoiceData = {
-    oid, name, tt, phone, date, detail,
-    price: final, originalPrice: raw, discount: disc,
-    status, game: key, gameName: GAMES[key].name, timestamp: Date.now()
-  };
-  saveInvoice();
-  updateStats(final);
-  
-  // Show customer review
-  showCustomerReview(name, date);
-  
-  // Preload images for download
-  preloadInvoiceImages();
+  // Review
+  const showRev = document.getElementById('showReview').value === 'yes';
+  if(showRev){
+    buildReview(name, date);
+    document.getElementById('review-section').style.display = 'block';
+  } else {
+    document.getElementById('review-section').style.display = 'none';
+  }
 
-  // Animate
+  // Watermark
+  document.getElementById('inv-watermark').style.display =
+    document.getElementById('showWatermark').checked ? 'block' : 'none';
+
+  // Custom footer
+  const ft = document.getElementById('footerText').value.trim();
+  document.getElementById('footer-custom').textContent = ft || 'susantedit · nepal 🇳🇵';
+
+  // Save & animate
+  saveInvoice({ oid, name, tt, phone, date, detail, price: final, originalPrice: raw, discount: disc, status, game: key, gameName: GAMES[key].name, timestamp: Date.now() });
+
   const area = document.getElementById('bill-area');
   area.classList.remove('reveal');
   void area.offsetWidth;
@@ -2251,314 +807,337 @@ function generateBill(){
   showToast('◈ INVOICE GENERATED');
 }
 
-function preloadInvoiceImages(){
-  // Ensure all images are loaded before download
-  const images = document.querySelectorAll('#bill-area img');
-  images.forEach(img => {
-    if(!img.complete) {
-      console.log('Waiting for image:', img.src);
-    }
-    // Set crossOrigin for external images
-    if(img.src.startsWith('http') && !img.src.includes(window.location.hostname)) {
-      img.crossOrigin = 'anonymous';
-    }
-  });
-}
+// ═══════════════════════════════════════
+//  BUILD REVIEW
+// ═══════════════════════════════════════
+function buildReview(name, date){
+  const rating = parseInt(document.getElementById('reviewRating').value);
+  const custom = document.getElementById('reviewMessage').value.trim();
+  const stars  = ['★☆☆☆☆','★★☆☆☆','★★★☆☆','★★★★☆','★★★★★'][rating-1];
 
-// Convert external images to base64 to avoid CORS issues
-function convertImagesToBase64(callback){
-  const billArea = document.getElementById('bill-area');
-  const images = billArea.querySelectorAll('img');
-  let loadedCount = 0;
-  const totalImages = images.length;
-  
-  if(totalImages === 0) {
-    callback();
-    return;
+  const defaults = [
+    "Excellent service! Fast delivery and great support. Highly recommended! 🔥",
+    "Amazing experience! Professional and quick. Will definitely order again! ⭐",
+    "Best reseller! Trustworthy and reliable. 5 stars all the way! 💯",
+    "Super fast and legit! Great communication. Highly satisfied! ✨",
+    "Outstanding service! Very professional. Definitely recommend to everyone! 🌟"
+  ];
+
+  document.getElementById('review-stars').textContent       = stars;
+  document.getElementById('review-text').textContent        = custom || defaults[Math.floor(Math.random()*defaults.length)];
+  document.getElementById('review-author-name').textContent = name !== '—' ? name : 'Verified User';
+  document.getElementById('review-date-tag').textContent    = `Verified Purchase · ${date}`;
+
+  // Avatar
+  const av = document.getElementById('review-avatar');
+  if(customerPhotoDataURL){
+    av.innerHTML = `<img src="${customerPhotoDataURL}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  } else {
+    av.innerHTML = '👤';
   }
-  
-  images.forEach(img => {
-    // Skip if already base64 or local
-    if(img.src.startsWith('data:') || img.src.startsWith('blob:') || img.src.includes(window.location.hostname)) {
-      loadedCount++;
-      if(loadedCount === totalImages) callback();
-      return;
-    }
-    
-    // Convert external image to base64
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
-    const newImg = new Image();
-    newImg.crossOrigin = 'anonymous';
-    
-    newImg.onload = function() {
-      canvas.width = newImg.width;
-      canvas.height = newImg.height;
-      ctx.drawImage(newImg, 0, 0);
-      
-      try {
-        const dataURL = canvas.toDataURL('image/png');
-        img.src = dataURL;
-        console.log('Converted image to base64');
-      } catch(e) {
-        console.warn('Could not convert image:', e);
-      }
-      
-      loadedCount++;
-      if(loadedCount === totalImages) callback();
-    };
-    
-    newImg.onerror = function() {
-      console.warn('Failed to load image:', img.src);
-      loadedCount++;
-      if(loadedCount === totalImages) callback();
-    };
-    
-    newImg.src = img.src;
-  });
 }
 
-function saveInvoice(){
-  if(!currentInvoiceData) return;
+// ═══════════════════════════════════════
+//  STATUS
+// ═══════════════════════════════════════
+function applyStatus(status){
+  const sl = status.toLowerCase();
+  document.getElementById('status-badge').className = 'pb-status ' + sl;
+  document.getElementById('status-bar').className   = 'status-confirm ' + sl;
+  document.getElementById('status-text').textContent = status;
+
+  const icons = { PAID:'✓', PENDING:'⏳', FAILED:'✕' };
+  const msgs  = {
+    PAID:    'Payment Received & Confirmed',
+    PENDING: 'Payment Pending Confirmation',
+    FAILED:  'Payment Failed or Declined'
+  };
+  const labels = { PAID:'Amount Paid', PENDING:'Amount Due', FAILED:'Amount Due' };
+
+  document.getElementById('status-icon').textContent = icons[status];
+  document.getElementById('status-msg').textContent  = msgs[status];
+  document.getElementById('price-label').textContent = labels[status];
+}
+
+// ═══════════════════════════════════════
+//  SAVE / LOAD HISTORY  (with images)
+// ═══════════════════════════════════════
+//  SAVE / LOAD HISTORY (FIXED)
+// ═══════════════════════════════════════
+function saveInvoice(data){
   try{
+    // ❌ REMOVE heavy data - don't store images
+    delete data.proofImg;
+    delete data.customerImg;
+
     let arr = JSON.parse(localStorage.getItem('se_invoices') || '[]');
-    arr.unshift(currentInvoiceData);
-    if(arr.length > 50) arr = arr.slice(0,50);
+
+    // Remove duplicate
+    arr = arr.filter(x => x.oid !== data.oid);
+
+    // Add new on top
+    arr.unshift(data);
+
+    // ✅ LIMIT TO 4 ONLY
+    if(arr.length > 4) arr = arr.slice(0, 4);
+
     localStorage.setItem('se_invoices', JSON.stringify(arr));
-  }catch(e){}
-}
-
-function downloadBill(){
-  if(!currentOID){ 
-    showToast('⚠ Generate invoice first');
-    return;
+  }catch(e){
+    console.warn('Storage full → resetting history');
+    localStorage.removeItem('se_invoices');
+    localStorage.setItem('se_invoices', JSON.stringify([data]));
   }
-  
-  showToast('📸 Converting images...');
-  
-  // Convert external images to base64 first
-  convertImagesToBase64(function() {
-    showToast('📸 Capturing invoice in 9:16 ratio...');
-    
-    setTimeout(()=>{
-      const billArea = document.getElementById('bill-area');
-      const body = document.body;
-      
-      if(!billArea){
-        showToast('❌ Invoice not found');
-        return;
-      }
-      
-      // Check if html2canvas is loaded
-      if(typeof html2canvas === 'undefined'){
-        alert('Download library not loaded. Please refresh the page and try again.');
-        return;
-      }
-      
-      console.log('Starting capture with 9:16 ratio...');
-      
-      // Add downloading class to hide safe zone indicators
-      body.classList.add('downloading');
-      
-      // Get the bill area dimensions
-      const billWidth = billArea.offsetWidth;
-      const billHeight = billArea.offsetHeight;
-      
-      // Calculate perfect 9:16 ratio dimensions
-      // Width: 1080px (standard TikTok), Height: 1920px (9:16 ratio)
-      const targetWidth = 1080;
-      const targetHeight = 1920;
-      
-      // Now all images are base64, safe to capture
-      html2canvas(billArea, {
-        scale: 2,
-        backgroundColor: '#0B0F14',
-        logging: false,
-        useCORS: false,
-        allowTaint: true,
-        width: billWidth,
-        height: billHeight
-      })
-        .then(canvas => {
-          console.log('Canvas created successfully');
-          
-          // Create a new canvas with perfect 9:16 ratio
-          const finalCanvas = document.createElement('canvas');
-          finalCanvas.width = targetWidth;
-          finalCanvas.height = targetHeight;
-          
-          const ctx = finalCanvas.getContext('2d');
-          ctx.fillStyle = '#0B0F14';
-          ctx.fillRect(0, 0, targetWidth, targetHeight);
-          
-          // Calculate scaling to fit content while maintaining aspect ratio
-          const scale = Math.min(targetWidth / canvas.width, targetHeight / canvas.height);
-          const scaledWidth = canvas.width * scale;
-          const scaledHeight = canvas.height * scale;
-          
-          // Center the content
-          const x = (targetWidth - scaledWidth) / 2;
-          const y = (targetHeight - scaledHeight) / 2;
-          
-          ctx.drawImage(canvas, x, y, scaledWidth, scaledHeight);
-          
-          // Remove downloading class
-          body.classList.remove('downloading');
-          
-          try {
-            // Use toBlob for download
-            finalCanvas.toBlob(function(blob) {
-              if(!blob) {
-                showToast('❌ Failed to create image');
-                return;
-              }
-              
-              // Create download link
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.download = currentOID + '_9-16.png';
-              link.href = url;
-              link.style.display = 'none';
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              
-              // Clean up
-              setTimeout(() => URL.revokeObjectURL(url), 100);
-              
-              showToast('✅ Downloaded 9:16 (1080x1920)!');
-              console.log('Download successful - 9:16 ratio');
-            }, 'image/png');
-            
-          } catch(err) {
-            console.error('Download error:', err);
-            showToast('❌ Download failed: ' + err.message);
-            body.classList.remove('downloading');
-          }
-        })
-        .catch(err => {
-          console.error('Canvas error:', err);
-          showToast('❌ Capture failed: ' + err.message);
-          body.classList.remove('downloading');
-        });
-    }, 500);
-  });
-}
-
-function copyOID(){
-  const oid = document.getElementById('res-oid').textContent;
-  if(oid === '—'){ showToast('Generate invoice first'); return; }
-  navigator.clipboard.writeText(oid)
-    .then(()=>showToast('COPIED: '+oid))
-    .catch(()=>showToast('COPY FAILED'));
 }
 
 function viewHistory(){
-  const modal = document.getElementById('historyModal');
-  const list  = document.getElementById('historyList');
+  const list = document.getElementById('historyList');
   try{
     const arr = JSON.parse(localStorage.getItem('se_invoices') || '[]');
-    if(arr.length === 0){
+
+    if(!arr.length){
       list.innerHTML = '<div class="empty-state">NO INVOICES SAVED YET</div>';
     } else {
-      list.innerHTML = arr.map(inv=>`
-        <div class="hist-item" onclick='loadInvoice(${JSON.stringify(inv).replace(/'/g,"&#39;")})'>
+      list.innerHTML = '';
+
+      arr.forEach((inv, i) => {
+        const div = document.createElement('div');
+        div.className = 'hist-item';
+
+        div.innerHTML = `
           <div class="hi-top">
             <div class="hi-oid">${inv.oid}</div>
-            <div class="hi-badge ${inv.status.toLowerCase()}">${inv.status}</div>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <div class="hi-badge ${(inv.status||'').toLowerCase()}">${inv.status}</div>
+              <button class="del-btn">DEL</button>
+            </div>
           </div>
           <div class="hi-info"><strong>${inv.name}</strong> · ${inv.gameName} · ${inv.date}</div>
-          <div class="hi-price">NPR ${inv.price.toLocaleString('en-IN')}</div>
-        </div>`).join('');
+          <div class="hi-price">NPR ${(inv.price||0).toLocaleString('en-IN')}</div>
+        `;
+
+        // ✅ FIX: Proper click binding
+        div.addEventListener('click', () => loadInvoice(i));
+
+        // ✅ Prevent delete click from triggering load
+        div.querySelector('.del-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteInvoice(i);
+        });
+
+        list.appendChild(div);
+      });
     }
-    modal.classList.add('show');
-  }catch(e){ showToast('FAILED TO LOAD HISTORY'); }
+
+    document.getElementById('historyModal').classList.add('show');
+  }catch(e){
+    showToast('FAILED TO LOAD HISTORY');
+  }
+}
+
+function deleteInvoice(index){
+  try{
+    let arr = JSON.parse(localStorage.getItem('se_invoices') || '[]');
+    arr.splice(index, 1);
+    localStorage.setItem('se_invoices', JSON.stringify(arr));
+    viewHistory();
+    showToast('🗑 Deleted');
+  }catch(e){}
+}
+
+function loadInvoice(index){
+  try{
+    const arr  = JSON.parse(localStorage.getItem('se_invoices') || '[]');
+    const data = arr[index];
+    if(!data) return;
+
+    document.getElementById('cName').value         = data.name === '—' ? '' : data.name;
+    document.getElementById('cTikTok').value       = data.tt === '—' ? '' : data.tt;
+    document.getElementById('cPhone').value        = data.phone === '—' ? '' : data.phone;
+    document.getElementById('orderInfo').value     = data.detail === '—' ? '' : data.detail;
+    document.getElementById('price').value         = data.originalPrice || data.price;
+    document.getElementById('discount').value      = data.discount || 0;
+    document.getElementById('gameSelect').value    = data.game;
+    document.getElementById('paymentStatus').value = data.status;
+
+    closeHistory();
+    generateBill();
+
+    showToast('📂 Loaded');
+  }catch(e){
+    console.error(e);
+    showToast('FAILED TO LOAD');
+  }
 }
 
 function closeHistory(){
   document.getElementById('historyModal').classList.remove('show');
 }
 
-function loadInvoice(data){
-  document.getElementById('cName').value        = data.name === '—' ? '' : data.name;
-  document.getElementById('cTikTok').value      = data.tt === '—' ? '' : data.tt;
-  document.getElementById('cPhone').value       = data.phone === '—' ? '' : data.phone;
-  document.getElementById('orderInfo').value    = data.detail === '—' ? '' : data.detail;
-  document.getElementById('price').value        = data.originalPrice || data.price;
-  document.getElementById('discount').value     = data.discount || 0;
-  document.getElementById('gameSelect').value   = data.game;
-  document.getElementById('paymentStatus').value= data.status;
-  closeHistory();
-  generateBill();
+function loadInvoice(index){
+  try{
+    const arr  = JSON.parse(localStorage.getItem('se_invoices')||'[]');
+    const data = arr[index];
+    if(!data) return;
+
+    document.getElementById('cName').value         = data.name==='—'?'':data.name;
+    document.getElementById('cTikTok').value       = data.tt==='—'?'':data.tt;
+    document.getElementById('cPhone').value        = data.phone==='—'?'':data.phone;
+    document.getElementById('orderInfo').value     = data.detail==='—'?'':data.detail;
+    document.getElementById('price').value         = data.originalPrice || data.price;
+    document.getElementById('discount').value      = data.discount || 0;
+    document.getElementById('gameSelect').value    = data.game;
+    document.getElementById('paymentStatus').value = data.status;
+    if(data.reviewMsg)    document.getElementById('reviewMessage').value  = data.reviewMsg;
+    if(data.reviewRating) document.getElementById('reviewRating').value   = data.reviewRating;
+    if(data.footerText)   document.getElementById('footerText').value     = data.footerText;
+    if(data.showReview)   document.getElementById('showReview').value     = data.showReview;
+    if(typeof data.showWatermark !== 'undefined')
+      document.getElementById('showWatermark').checked = data.showWatermark;
+
+    // Restore images
+    if(data.proofImg){
+      proofDataURL = data.proofImg;
+      const pz = document.getElementById('proofDropZone');
+      document.getElementById('proofPreview').src = data.proofImg;
+      document.getElementById('proofPreview').style.display = 'block';
+      pz.classList.add('has-file');
+      pz.querySelector('.drop-zone-icon').textContent = '✅';
+      pz.querySelector('.drop-zone-text').textContent = 'Proof loaded from history';
+    } else {
+      proofDataURL = null;
+    }
+
+    if(data.customerImg){
+      customerPhotoDataURL = data.customerImg;
+      const cz = document.getElementById('customerDropZone');
+      document.getElementById('customerPreview').src = data.customerImg;
+      document.getElementById('customerPreview').style.display = 'block';
+      cz.classList.add('has-file');
+      cz.querySelector('.drop-zone-icon').textContent = '✅';
+      cz.querySelector('.drop-zone-text').textContent = 'Photo loaded from history';
+    } else {
+      customerPhotoDataURL = null;
+    }
+
+    closeHistory();
+    generateBill();
+    showToast('📂 Invoice loaded');
+  }catch(e){ showToast('FAILED TO LOAD'); console.error(e); }
 }
 
 // ═══════════════════════════════════════
-//  CUSTOMER REVIEW FUNCTIONS
+//  COPY OID
 // ═══════════════════════════════════════
-function showCustomerReview(customerName, date){
-  const reviewSection = document.getElementById('review-section');
-  const reviewName = document.getElementById('review-name');
-  const reviewDate = document.getElementById('review-date');
-  const reviewText = document.getElementById('review-text');
-  const reviewStars = document.getElementById('review-stars');
-  
-  // Get custom review inputs
-  const customRating = document.getElementById('reviewRating').value;
-  const customMessage = document.getElementById('reviewMessage').value.trim();
-  
-  // Default review templates (if no custom message)
-  const defaultReviews = [
-    "Excellent service! Fast delivery and great support. Highly recommended! 🔥",
-    "Amazing experience! Professional service and quick response. Will order again! ⭐",
-    "Best service provider! Trustworthy and reliable. 5 stars! 💯",
-    "Super fast delivery! Great communication and quality service. Highly satisfied! ✨",
-    "Outstanding service! Very professional and helpful. Definitely recommend! 🌟"
-  ];
-  
-  // Professional username templates
-  const usernameTemplates = [
-    'cyber_buyer_404',
-    'pro_gamer_x',
-    'elite_player_99',
-    'tech_master_21',
-    'gaming_legend_',
-    'digital_warrior_',
-    'neon_user_',
-    'prime_customer_'
-  ];
-  
-  // Generate professional username if customer name looks like placeholder
-  let displayName = customerName;
-  if(!customerName || customerName === '—' || customerName.length < 3 || /^[a-z]+$/.test(customerName.toLowerCase())) {
-    const randomTemplate = usernameTemplates[Math.floor(Math.random() * usernameTemplates.length)];
-    const randomNum = Math.floor(Math.random() * 999) + 1;
-    displayName = randomTemplate + randomNum;
+function copyOID(){
+  const oid = document.getElementById('res-oid').textContent;
+  if(oid==='—'){ showToast('Generate invoice first'); return; }
+  navigator.clipboard.writeText(oid)
+    .then(()=>showToast('COPIED: '+oid))
+    .catch(()=>{ 
+      const ta=document.createElement('textarea');
+      ta.value=oid;document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');document.body.removeChild(ta);
+      showToast('COPIED: '+oid);
+    });
+}
+
+// ═══════════════════════════════════════
+//  DOWNLOAD — TRUE 9:16 (1080×1920)
+// ═══════════════════════════════════════
+function downloadBill(){
+  if(!currentOID){ showToast('⚠ Generate invoice first'); return; }
+  showToast('📸 Preparing 1080×1920 export...');
+
+  const billArea = document.getElementById('bill-area');
+  if(!billArea){ showToast('❌ Invoice not found'); return; }
+
+  // Convert all external images to base64 first
+  const imgs = Array.from(billArea.querySelectorAll('img'));
+  let pending = imgs.filter(i => !i.src.startsWith('data:') && !i.src.startsWith('blob:') && i.src !== '');
+
+ const doCapture = () => {
+
+  const rw = 450;
+  const rh = 800;
+
+  const clone = billArea.cloneNode(true);
+
+  const temp = document.createElement('div');
+  temp.style.position = 'fixed';
+  temp.style.left = '-9999px';
+  temp.style.top = '-9999px';
+  temp.style.width = rw + 'px';
+  temp.style.height = rh + 'px';
+  temp.appendChild(clone);
+  document.body.appendChild(temp);
+
+  // Hide broken images
+  clone.querySelectorAll('img').forEach(img=>{
+    if(!img.complete || img.naturalWidth === 0){
+      img.style.display = 'none';
+    }
+  });
+
+  setTimeout(() => {
+    html2canvas(clone, {
+      scale: 3,
+      width: rw,
+      height: rh,
+      backgroundColor: '#0A0A0A',
+      useCORS: true
+    }).then(canvas => {
+
+      document.body.removeChild(temp);
+
+      const final = document.createElement('canvas');
+      final.width = 1080;
+      final.height = 1920;
+
+      const ctx = final.getContext('2d');
+      ctx.fillStyle = "#0A0A0A";
+      ctx.fillRect(0,0,1080,1920);
+
+      ctx.drawImage(canvas, 0, 0, 1080, 1920);
+
+      const link = document.createElement('a');
+      link.download = currentOID + ".png";
+      link.href = final.toDataURL();
+      link.click();
+
+      showToast("✅ Download success");
+    })
+    .catch(err=>{
+      console.error(err);
+      showToast("❌ Capture failed");
+    });
+
+  }, 300); // delay
+};
+  if(pending.length === 0){
+    doCapture();
+    return;
   }
-  
-  // Star ratings based on selection
-  const starRatings = {
-    '5': '★★★★★',
-    '4': '★★★★☆',
-    '3': '★★★☆☆',
-    '2': '★★☆☆☆',
-    '1': '★☆☆☆☆'
-  };
-  
-  // Use custom message or random default
-  const reviewMessage = customMessage || defaultReviews[Math.floor(Math.random() * defaultReviews.length)];
-  const stars = starRatings[customRating] || '★★★★★';
-  
-  // Update review content
-  reviewName.textContent = displayName;
-  reviewDate.textContent = `Verified Purchase • ${date}`;
-  reviewText.textContent = reviewMessage;
-  reviewStars.textContent = stars;
-  
-  // Show review section
-  reviewSection.style.display = 'block';
-}
 
+  // Convert external images to base64
+  let done = 0;
+  pending.forEach(img => {
+    const cvs = document.createElement('canvas');
+    const cx  = cvs.getContext('2d');
+    const tmp = new Image();
+    tmp.crossOrigin = 'anonymous';
+    tmp.onload  = () => {
+      cvs.width  = tmp.naturalWidth  || 100;
+      cvs.height = tmp.naturalHeight || 100;
+      cx.drawImage(tmp, 0, 0);
+
+
+      try { img.src = cvs.toDataURL('image/png'); } catch(e){}
+      if(++done >= pending.length) doCapture();
+    };
+    tmp.onerror = () => { if(++done >= pending.length) doCapture(); };
+    tmp.src = img.src + (img.src.includes('?') ? '&' : '?') + '_t=' + Date.now();
+  });
+}
 </script>
 </body>
-</html> 
+</html>
