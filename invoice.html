@@ -679,6 +679,9 @@ function setupDropZone(zoneId, inputId, previewId, onLoad, maxMB) {
       zone.querySelector('.drop-zone-icon').textContent = '✅';
       zone.querySelector('.drop-zone-text').textContent = file.name;
       showToast('✅ File uploaded');
+      
+      // Auto-regenerate invoice to show the proof
+      if(currentOID) generateBill();
     };
     reader.readAsDataURL(file);
   }

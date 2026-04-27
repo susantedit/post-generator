@@ -679,6 +679,9 @@ function setupDropZone(zoneId, inputId, previewId, onLoad, maxMB) {
       zone.querySelector('.drop-zone-icon').textContent = '✅';
       zone.querySelector('.drop-zone-text').textContent = file.name;
       showToast('✅ File uploaded');
+      
+      // Auto-regenerate invoice to show the proof
+      if(currentOID) generateBill();
     };
     reader.readAsDataURL(file);
   }
@@ -1044,6 +1047,8 @@ function copyOID(){
 // ═══════════════════════════════════════
 //  DOWNLOAD — TRUE 9:16 (1080×1920)
 // ═══════════════════════════════════════
+//  DOWNLOAD — TRUE 9:16 (1080×1920)
+// ═══════════════════════════════════════
 function downloadBill(){
   if(!currentOID){ showToast('⚠ Generate invoice first'); return; }
   showToast('📸 Preparing 1080×1920 export...');
@@ -1055,64 +1060,94 @@ function downloadBill(){
   const imgs = Array.from(billArea.querySelectorAll('img'));
   let pending = imgs.filter(i => !i.src.startsWith('data:') && !i.src.startsWith('blob:') && i.src !== '');
 
- const doCapture = () => {
+  const doCapture = () => {
+    // Get actual ratio box dimensions
+    const ratioBox = document.getElementById('bill-ratio-box');
+    const rw = ratioBox ? ratioBox.offsetWidth : 450;
+    const rh = ratioBox ? ratioBox.offsetHeight : 800;
 
-  const rw = 450;
-  const rh = 800;
+    console.log('Capture dimensions:', rw, 'x', rh);
 
-  const clone = billArea.cloneNode(true);
+    const clone = billArea.cloneNode(true);
 
-  const temp = document.createElement('div');
-  temp.style.position = 'fixed';
-  temp.style.left = '-9999px';
-  temp.style.top = '-9999px';
-  temp.style.width = rw + 'px';
-  temp.style.height = rh + 'px';
-  temp.appendChild(clone);
-  document.body.appendChild(temp);
+    const temp = document.createElement('div');
+    temp.style.position = 'fixed';
+    temp.style.left = '-9999px';
+    temp.style.top = '-9999px';
+    temp.style.width = rw + 'px';
+    temp.style.height = rh + 'px';
+    temp.style.overflow = 'hidden';
+    temp.appendChild(clone);
+    document.body.appendChild(temp);
 
-  // Hide broken images
-  clone.querySelectorAll('img').forEach(img=>{
-    if(!img.complete || img.naturalWidth === 0){
-      img.style.display = 'none';
-    }
-  });
-
-  setTimeout(() => {
-    html2canvas(clone, {
-      scale: 3,
-      width: rw,
-      height: rh,
-      backgroundColor: '#0A0A0A',
-      useCORS: true
-    }).then(canvas => {
-
-      document.body.removeChild(temp);
-
-      const final = document.createElement('canvas');
-      final.width = 1080;
-      final.height = 1920;
-
-      const ctx = final.getContext('2d');
-      ctx.fillStyle = "#0A0A0A";
-      ctx.fillRect(0,0,1080,1920);
-
-      ctx.drawImage(canvas, 0, 0, 1080, 1920);
-
-      const link = document.createElement('a');
-      link.download = currentOID + ".png";
-      link.href = final.toDataURL();
-      link.click();
-
-      showToast("✅ Download success");
-    })
-    .catch(err=>{
-      console.error(err);
-      showToast("❌ Capture failed");
+    // Hide broken images
+    clone.querySelectorAll('img').forEach(img => {
+      if(!img.complete || img.naturalWidth === 0){
+        img.style.display = 'none';
+      }
     });
 
-  }, 300); // delay
-};
+    setTimeout(() => {
+      html2canvas(clone, {
+        scale: 2,
+        width: rw,
+        height: rh,
+        backgroundColor: '#0A0A0A',
+        useCORS: true,
+        logging: false,
+        allowTaint: true
+      }).then(canvas => {
+        console.log('Canvas created:', canvas.width, 'x', canvas.height);
+        
+        document.body.removeChild(temp);
+
+        // Create final 1080×1920 canvas
+        const final = document.createElement('canvas');
+        final.width = 1080;
+        final.height = 1920;
+
+        const ctx = final.getContext('2d');
+        ctx.fillStyle = '#0A0A0A';
+        ctx.fillRect(0, 0, 1080, 1920);
+
+        // Scale and center the captured canvas
+        const scale = Math.min(1080 / canvas.width, 1920 / canvas.height);
+        const scaledW = canvas.width * scale;
+        const scaledH = canvas.height * scale;
+        const x = (1080 - scaledW) / 2;
+        const y = (1920 - scaledH) / 2;
+
+        ctx.drawImage(canvas, x, y, scaledW, scaledH);
+
+        // Use toBlob instead of toDataURL for better reliability
+        final.toBlob(blob => {
+          if(!blob){
+            showToast('❌ Failed to create image');
+            return;
+          }
+
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = currentOID + '_9-16.png';
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          setTimeout(() => URL.revokeObjectURL(url), 100);
+          showToast('✅ Downloaded 1080×1920!');
+          console.log('Download successful');
+        }, 'image/png');
+
+      }).catch(err => {
+        console.error('Canvas error:', err);
+        document.body.removeChild(temp);
+        showToast('❌ Capture failed: ' + err.message);
+      });
+
+    }, 300);
+  };
+
   if(pending.length === 0){
     doCapture();
     return;
@@ -1122,19 +1157,30 @@ function downloadBill(){
   let done = 0;
   pending.forEach(img => {
     const cvs = document.createElement('canvas');
-    const cx  = cvs.getContext('2d');
+    const cx = cvs.getContext('2d');
     const tmp = new Image();
     tmp.crossOrigin = 'anonymous';
-    tmp.onload  = () => {
-      cvs.width  = tmp.naturalWidth  || 100;
+    
+    tmp.onload = () => {
+      cvs.width = tmp.naturalWidth || 100;
       cvs.height = tmp.naturalHeight || 100;
       cx.drawImage(tmp, 0, 0);
 
-
-      try { img.src = cvs.toDataURL('image/png'); } catch(e){}
+      try {
+        img.src = cvs.toDataURL('image/png');
+        console.log('Converted image to base64');
+      } catch(e){
+        console.warn('Could not convert image:', e);
+      }
+      
       if(++done >= pending.length) doCapture();
     };
-    tmp.onerror = () => { if(++done >= pending.length) doCapture(); };
+    
+    tmp.onerror = () => {
+      console.warn('Failed to load image:', img.src);
+      if(++done >= pending.length) doCapture();
+    };
+    
     tmp.src = img.src + (img.src.includes('?') ? '&' : '?') + '_t=' + Date.now();
   });
 }
