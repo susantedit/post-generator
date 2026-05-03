@@ -310,7 +310,7 @@ select option{background:var(--bg3);}
 
       <div class="field">
         <span class="fl">Service Provider</span>
-        <select id="gameSelect">
+        <select id="gameSelect" onchange="handleServiceChange()">
           <option value="DC">DRIP CLINT</option>
           <option value="HG">HG CHEATS</option>
           <option value="IOS">IOS FLUORITE</option>
@@ -320,8 +320,28 @@ select option{background:var(--bg3);}
           <option value="WL">WEEKLY LITE</option>
           <option value="WK">WEEKLY</option>
           <option value="MN">MONTHLY</option>
+          <option value="GPC">GOOGLE PLAY CONSOLE</option>
           <option value="OTHER">Special Service</option>
+          <option value="CUSTOM">✏ Custom Service</option>
         </select>
+      </div>
+
+      <!-- Custom Service Fields (shown when CUSTOM is selected) -->
+      <div id="customServiceFields" style="display:none;">
+        <div class="field">
+          <span class="fl">Custom Service Name</span>
+          <input type="text" id="customServiceName" placeholder="Enter service name…">
+        </div>
+        <div class="field">
+          <span class="fl">Custom Service Photo (Drag & Drop / Click)</span>
+          <div class="drop-zone" id="customServiceDropZone">
+            <div class="drop-zone-icon">🖼</div>
+            <div class="drop-zone-text">Drop service image or click to browse</div>
+            <div class="drop-zone-sub">JPG, PNG, WEBP · Max 5MB</div>
+            <input type="file" id="customServicePhoto" accept="image/*">
+            <img class="drop-zone-preview" id="customServicePreview" alt="">
+          </div>
+        </div>
       </div>
       <div class="field">
         <span class="fl">Order Description</span>
@@ -584,21 +604,24 @@ select option{background:var(--bg3);}
 //  CONSTANTS & STATE
 // ═══════════════════════════════════════
 const GAMES = {
-  DC:   { name:"DRIP CLINT",     img:"https://i.postimg.cc/Jnwh1T2q/Screenshot-20260421-102516.jpg" },
-  HG:   { name:"HG CHEATS",      img:"https://i.postimg.cc/fRGsXVfy/Screenshot-20260421-102611.jpg" },
-  IOS:  { name:"IOS FLUORITE",   img:"https://i.postimg.cc/R07kHX0k/fluorite-ios-ff-og-1765886845.webp" },
-  PH:   { name:"PRIME HOOK",     img:"https://i.postimg.cc/x8ChBQPd/IMG-20260421-102934-585.jpg" },
-  PT:   { name:"PATO TEAM",      img:"https://i.postimg.cc/RV2ypjJM/Screenshot-20260421-102813.jpg" },
-  DM:   { name:"DIAMOND",        img:"diamond.webp" },
-  WL:   { name:"WEEKLY LITE",    img:"weeklylite.webp" },
-  WK:   { name:"WEEKLY",         img:"weekly.webp" },
-  MN:   { name:"MONTHLY",        img:"monthly.webp" },
-  OTHER:{ name:"SPECIAL SERVICE",img:"" }
+  DC:     { name:"DRIP CLINT",          img:"https://i.postimg.cc/Jnwh1T2q/Screenshot-20260421-102516.jpg" },
+  HG:     { name:"HG CHEATS",           img:"https://i.postimg.cc/fRGsXVfy/Screenshot-20260421-102611.jpg" },
+  IOS:    { name:"IOS FLUORITE",        img:"https://i.postimg.cc/R07kHX0k/fluorite-ios-ff-og-1765886845.webp" },
+  PH:     { name:"PRIME HOOK",          img:"https://i.postimg.cc/x8ChBQPd/IMG-20260421-102934-585.jpg" },
+  PT:     { name:"PATO TEAM",           img:"https://i.postimg.cc/RV2ypjJM/Screenshot-20260421-102813.jpg" },
+  DM:     { name:"DIAMOND",             img:"diamond.webp" },
+  WL:     { name:"WEEKLY LITE",         img:"weeklylite.webp" },
+  WK:     { name:"WEEKLY",              img:"weekly.webp" },
+  MN:     { name:"MONTHLY",             img:"monthly.webp" },
+  GPC:    { name:"GOOGLE PLAY CONSOLE", img:"google console.png" },
+  OTHER:  { name:"SPECIAL SERVICE",     img:"" },
+  CUSTOM: { name:"CUSTOM SERVICE",      img:"" }
 };
 
 let currentOID = "";
 let proofDataURL = null;
 let customerPhotoDataURL = null;
+let customServicePhotoDataURL = null;
 
 // ═══════════════════════════════════════
 //  INIT
@@ -607,8 +630,22 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
   setupDropZone('proofDropZone', 'paymentProof', 'proofPreview', (data) => { proofDataURL = data; }, 10);
   setupDropZone('customerDropZone', 'customerPhoto', 'customerPreview', (data) => { customerPhotoDataURL = data; }, 5);
+  setupDropZone('customServiceDropZone', 'customServicePhoto', 'customServicePreview', (data) => { customServicePhotoDataURL = data; }, 5);
   generateBill(); // Show default invoice immediately
 });
+
+// ═══════════════════════════════════════
+//  HANDLE SERVICE SELECT CHANGE
+// ═══════════════════════════════════════
+function handleServiceChange() {
+  const key = document.getElementById('gameSelect').value;
+  const customFields = document.getElementById('customServiceFields');
+  if (key === 'CUSTOM') {
+    customFields.style.display = 'block';
+  } else {
+    customFields.style.display = 'none';
+  }
+}
 
 // ═══════════════════════════════════════
 //  DRAG & DROP ZONES
@@ -734,8 +771,19 @@ function generateBill(){
   // Game image - use inline base64 conversion for CORS
   const gameImg = document.getElementById('res-game-img');
   gameImg.crossOrigin = 'anonymous';
-  gameImg.src = GAMES[key].img || '';
-  document.getElementById('res-game-name').textContent = GAMES[key].name;
+
+  if (key === 'CUSTOM') {
+    const customName = document.getElementById('customServiceName').value.trim() || 'CUSTOM SERVICE';
+    document.getElementById('res-game-name').textContent = customName.toUpperCase();
+    if (customServicePhotoDataURL) {
+      gameImg.src = customServicePhotoDataURL;
+    } else {
+      gameImg.src = '';
+    }
+  } else {
+    gameImg.src = GAMES[key].img || '';
+    document.getElementById('res-game-name').textContent = GAMES[key].name;
+  }
 
   // Discount display
   if(disc > 0){
@@ -1021,158 +1069,75 @@ function copyOID(){
 // ═══════════════════════════════════════
 function downloadBill(){
   if(!currentOID){ showToast('⚠ Generate invoice first'); return; }
-  showToast('📸 Preparing 1080×1920 export...');
+  showToast('📸 Preparing download...');
 
   const billArea = document.getElementById('bill-area');
   if(!billArea){ showToast('❌ Invoice not found'); return; }
 
-  // Convert all external images to base64 first
-  const imgs = Array.from(billArea.querySelectorAll('img'));
-  let pending = imgs.filter(i => !i.src.startsWith('data:') && !i.src.startsWith('blob:') && i.src !== '');
-
-  const doCapture = () => {
-    // Get actual ratio box dimensions
-    const ratioBox = document.getElementById('bill-ratio-box');
-    const rw = ratioBox ? ratioBox.offsetWidth : 450;
-    const rh = ratioBox ? ratioBox.offsetHeight : 800;
-
-    console.log('Capture dimensions:', rw, 'x', rh);
-
-    const clone = billArea.cloneNode(true);
-
-    // Remove ALL problematic styles
-    clone.querySelectorAll('*').forEach(el => {
-      el.style.backgroundImage = 'none';
-      el.style.background = 'transparent';
-      el.style.boxShadow = 'none';
-      el.style.filter = 'none';
-    });
-
-    const temp = document.createElement('div');
-    temp.style.position = 'fixed';
-    temp.style.left = '-9999px';
-    temp.style.top = '-9999px';
-    temp.style.width = rw + 'px';
-    temp.style.height = rh + 'px';
-    temp.style.overflow = 'hidden';
-    temp.style.backgroundColor = '#0A0A0A';
-    temp.appendChild(clone);
-    document.body.appendChild(temp);
-
-    // Hide broken images
-    clone.querySelectorAll('img').forEach(img => {
-      if(!img.complete || img.naturalWidth === 0){
-        img.style.display = 'none';
-      }
-    });
-
-    setTimeout(() => {
-      try {
-        html2canvas(clone, {
-          scale: 2,
-          width: rw,
-          height: rh,
-          backgroundColor: '#0A0A0A',
-          useCORS: true,
-          logging: false,
-          allowTaint: true,
-          imageTimeout: 0,
-          ignoreElements: (el) => {
-            // Ignore problematic elements
-            return el.tagName === 'SCRIPT' || el.tagName === 'STYLE';
+  setTimeout(() => {
+    try {
+      html2canvas(billArea, {
+        scale: 1.5,
+        backgroundColor: '#0A0A0A',
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        foreignObjectRendering: false,
+        removeContainer: true,
+        onclone: (clonedDoc) => {
+          // Remove all background images from cloned document
+          const clonedBill = clonedDoc.getElementById('bill-area');
+          if(clonedBill) {
+            clonedBill.querySelectorAll('*').forEach(el => {
+              el.style.backgroundImage = 'none';
+              el.style.background = el.style.backgroundColor || 'transparent';
+            });
           }
-        }).then(canvas => {
-          console.log('Canvas created:', canvas.width, 'x', canvas.height);
+        }
+      }).then(canvas => {
+        console.log('Canvas ready:', canvas.width, 'x', canvas.height);
+        
+        // Create 1080x1920 final canvas
+        const final = document.createElement('canvas');
+        final.width = 1080;
+        final.height = 1920;
+        
+        const ctx = final.getContext('2d');
+        ctx.fillStyle = '#0A0A0A';
+        ctx.fillRect(0, 0, 1080, 1920);
+        
+        // Scale to fit
+        const scale = Math.min(1080 / canvas.width, 1920 / canvas.height);
+        const w = canvas.width * scale;
+        const h = canvas.height * scale;
+        const x = (1080 - w) / 2;
+        const y = (1920 - h) / 2;
+        
+        ctx.drawImage(canvas, x, y, w, h);
+        
+        // Download
+        final.toBlob(blob => {
+          if(!blob) { showToast('❌ Failed'); return; }
           
-          if(temp.parentNode) document.body.removeChild(temp);
-
-          // Create final 1080×1920 canvas
-          const final = document.createElement('canvas');
-          final.width = 1080;
-          final.height = 1920;
-
-          const ctx = final.getContext('2d');
-          ctx.fillStyle = '#0A0A0A';
-          ctx.fillRect(0, 0, 1080, 1920);
-
-          // Scale and center the captured canvas
-          const scale = Math.min(1080 / canvas.width, 1920 / canvas.height);
-          const scaledW = canvas.width * scale;
-          const scaledH = canvas.height * scale;
-          const x = (1080 - scaledW) / 2;
-          const y = (1920 - scaledH) / 2;
-
-          ctx.drawImage(canvas, x, y, scaledW, scaledH);
-
-          // Use toBlob instead of toDataURL for better reliability
-          final.toBlob(blob => {
-            if(!blob){
-              showToast('❌ Failed to create image');
-              return;
-            }
-
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = currentOID + '_9-16.png';
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            setTimeout(() => URL.revokeObjectURL(url), 100);
-            showToast('✅ Downloaded 1080×1920!');
-            console.log('Download successful');
-          }, 'image/png');
-
-        }).catch(err => {
-          console.error('Canvas error:', err);
-          if(temp.parentNode) document.body.removeChild(temp);
-          showToast('❌ Download failed');
-        });
-      } catch(e) {
-        console.error('Capture exception:', e);
-        if(temp.parentNode) document.body.removeChild(temp);
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = currentOID + '.png';
+          a.click();
+          
+          setTimeout(() => URL.revokeObjectURL(url), 100);
+          showToast('✅ Downloaded!');
+        }, 'image/png');
+        
+      }).catch(err => {
+        console.error('Error:', err);
         showToast('❌ Download failed');
-      }
-
-    }, 500);
-  };
-
-  if(pending.length === 0){
-    doCapture();
-    return;
-  }
-
-  // Convert external images to base64
-  let done = 0;
-  pending.forEach(img => {
-    const cvs = document.createElement('canvas');
-    const cx = cvs.getContext('2d');
-    const tmp = new Image();
-    tmp.crossOrigin = 'anonymous';
-    
-    tmp.onload = () => {
-      cvs.width = tmp.naturalWidth || 100;
-      cvs.height = tmp.naturalHeight || 100;
-      cx.drawImage(tmp, 0, 0);
-
-      try {
-        img.src = cvs.toDataURL('image/png');
-        console.log('Converted image to base64');
-      } catch(e){
-        console.warn('Could not convert image:', e);
-      }
-      
-      if(++done >= pending.length) doCapture();
-    };
-    
-    tmp.onerror = () => {
-      console.warn('Failed to load image:', img.src);
-      if(++done >= pending.length) doCapture();
-    };
-    
-    tmp.src = img.src + (img.src.includes('?') ? '&' : '?') + '_t=' + Date.now();
-  });
+      });
+    } catch(e) {
+      console.error('Exception:', e);
+      showToast('❌ Error');
+    }
+  }, 200);
 }
 </script>
 </body>
